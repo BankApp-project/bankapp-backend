@@ -1,4 +1,4 @@
-package info.mackiewicz.bankapp.presentation.dashboard.settings.dto;
+package info.mackiewicz.bankapp.presentation.dashboard.settings.controller.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

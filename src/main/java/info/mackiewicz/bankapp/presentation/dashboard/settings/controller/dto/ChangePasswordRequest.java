@@ -1,4 +1,4 @@
-package info.mackiewicz.bankapp.presentation.dashboard.settings.dto;
+package info.mackiewicz.bankapp.presentation.dashboard.settings.controller.dto;
 
 import info.mackiewicz.bankapp.shared.annotations.Password;
 import info.mackiewicz.bankapp.shared.annotations.PasswordConfirmation;

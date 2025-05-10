@@ -2,10 +2,9 @@ package info.mackiewicz.bankapp.presentation.dashboard.settings.controller;
 
 import info.mackiewicz.bankapp.core.user.model.User;
 import info.mackiewicz.bankapp.core.user.model.interfaces.PersonalInfo;
-import info.mackiewicz.bankapp.presentation.dashboard.main.controller.ApiDashboardControllerInterface;
-import info.mackiewicz.bankapp.presentation.dashboard.settings.dto.ChangePasswordRequest;
-import info.mackiewicz.bankapp.presentation.dashboard.settings.dto.ChangeUsernameRequest;
-import info.mackiewicz.bankapp.presentation.dashboard.settings.dto.UserSettingsDTO;
+import info.mackiewicz.bankapp.presentation.dashboard.settings.controller.dto.ChangePasswordRequest;
+import info.mackiewicz.bankapp.presentation.dashboard.settings.controller.dto.ChangeUsernameRequest;
+import info.mackiewicz.bankapp.presentation.dashboard.settings.controller.dto.UserSettingsDTO;
 import info.mackiewicz.bankapp.shared.config.ApiConstants;
 import info.mackiewicz.bankapp.system.error.handling.dto.BaseApiError;
 import io.swagger.v3.oas.annotations.Operation;
