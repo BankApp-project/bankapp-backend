@@ -1,3 +1,4 @@
+
 ```bash
 # BankApp Project Structure
 
@@ -30,7 +31,32 @@ BankApp/
 │   │   │               │       ├── repository/   # JPA repositories for users
 │   │   │               │       └── service/      # User business services
 │   │   │               │   
-│   │   │               ├── presentation/         # Presentation layer (UI controllers for Thymleaf engine)
+│   │   │               ├── presentation/         # Presentation layer for user interfaces
+│   │   │               │   ├── auth/             # Authentication and authorization features
+│   │   │               │   │   ├── recovery/     # Account recovery functionalities
+│   │   │               │   │   │   └── password/ # Password reset and recovery
+│   │   │               │   │   │       ├── controller/ # REST controllers for password recovery
+│   │   │               │   │   │       ├── exception/  # Password recovery specific exceptions
+│   │   │               │   │   │       └── service/    # Services implementing password recovery logic
+│   │   │               │   │   │
+│   │   │               │   │   └── registration/   # User registration functionality
+│   │   │               │   │       ├── controller/ # Controllers handling registration requests
+│   │   │               │   │       ├── dto/        # Data transfer objects for registration
+│   │   │               │   │       ├── exception/  # Registration-specific exceptions
+│   │   │               │   │       └── service/    # Services implementing registration logic
+│   │   │               │   │
+│   │   │               │   ├── dashboard/          # User dashboard functionality
+│   │   │               │   │   ├── main/           # Main dashboard views
+│   │   │               │   │   │   ├── controller/ # Controllers for main dashboard
+│   │   │               │   │   │   └── service/    # Services supporting main dashboard
+│   │   │               │   │   │
+│   │   │               │   │   └── settings/       # User settings management
+│   │   │               │   │       ├── controller/ # REST controllers for settings management
+│   │   │               │   │       ├── dto/        # DTOs for user settings (password change, etc.)
+│   │   │               │   │       ├── exception/  # Settings-specific exceptions
+│   │   │               │   │       └── service/    # Services implementing settings management
+│   │   │               │   │
+│   │   │               │   └── landing/          # Landing page for non-authenticated users
 │   │   │               │   
 │   │   │               ├── shared/               # Shared components used across modules
 │   │   │               │   ├── annotations/      # Custom annotations
@@ -67,19 +93,6 @@ BankApp/
 │   │   │               │   │       ├── exception/    # Email-specific exceptions
 │   │   │               │   │       └── template/     # Email templates
 │   │   │               │   │
-│   │   │               │   ├── recovery/         # Account recovery features
-│   │   │               │   │   └── password/     # Password recovery functionality
-│   │   │               │   │       ├── controller/   # Password reset controllers
-│   │   │               │   │       │   ├── dto/      # Password reset DTOs
-│   │   │               │   │       ├── exception/    # Password recovery exceptions
-│   │   │               │   │       └── service/      # Password recovery services
-│   │   │               │   │
-│   │   │               │   ├── registration/     # User registration system
-│   │   │               │   │   ├── controller/   # Registration controllers
-│   │   │               │   │   ├── dto/          # Registration data transfer objects
-│   │   │               │   │   ├── exception/    # Registration exceptions
-│   │   │               │   │   └── service/      # Registration services
-│   │   │               │   │
 │   │   │               │   ├── shared/           # Shared code for system modules
 │   │   │               │   │
 │   │   │               │   ├── token/            # Token management system
@@ -99,10 +112,6 @@ BankApp/
 │   │   └── resources/                            # Application resources
 │   │       ├── db/                               # Database related resources
 │   │       │   └── migration/                    # Flyway database migrations
-│   │       ├── static/                           # Static web resources
-│   │       │   ├── css/                          # CSS stylesheets
-│   │       │   └── js/                           # JavaScript files
-│   │       ├── templates/                        # Thymeleaf HTML templates
 │   │       ├── application.yaml                  # Main application configuration
 │   │       └── logback-spring.xml                # Logging configuration
 │   │   
@@ -111,10 +120,11 @@ BankApp/
 │       │   └── info/
 │       │       └── mackiewicz/
 │       │           └── bankapp/                  # Test packages mirror main structure
-│       │               ├── core/                 # Tests for core domain objects
+│       │               ├── core/                 # Tests for core domain layer
 │       │               ├── integration/          # Integration tests between components
+│       │               └── presentation/         # Tests for presentation layer 
 │       │               ├── system/               # Tests for system functionalities
-│       │               └── testutils/            # Testing utilities and helpers
+│       │               ├── testutils/            # Testing utilities and helpers
 │       │     
 │       └── resources/                            # Test resources
 │           └── application-test.yaml             # Test-specific configuration
