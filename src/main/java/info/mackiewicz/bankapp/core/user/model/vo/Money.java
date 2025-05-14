@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 public class Money {
     public static final Money ZERO = new Money(BigDecimal.ZERO);
     public static final Money TEN = new Money(BigDecimal.TEN);
-
     private BigDecimal value;
 
     /**
