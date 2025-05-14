@@ -1,5 +1,7 @@
 package info.mackiewicz.bankapp.core.user.model.vo;
 
+import info.mackiewicz.bankapp.core.user.exception.InvalidMoneyValueException; // Importujemy nasz wyjątek
+
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -15,7 +17,7 @@ import java.math.BigDecimal;
 @Embeddable
 @Getter
 @EqualsAndHashCode
-@NoArgsConstructor(access = AccessLevel.PROTECTED) // For JPA
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Money {
     public static final Money ZERO = new Money(BigDecimal.ZERO);
     public static final Money TEN = new Money(BigDecimal.TEN);
@@ -27,28 +29,25 @@ public class Money {
      * @param value - The monetary value.
      */
     public Money(BigDecimal value) {
-        validate(value);
-        this.value = value.setScale(2, BigDecimal.ROUND_HALF_UP); // Round to 2 decimal places (standard for money)
+        if (!isValid(value)) {
+            throw new InvalidMoneyValueException("Money value must be greater than zero.");
+        }
+        this.value = value.setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
     /**
-     * Validates the monetary value to ensure it's not null or negative.
+     * Checks if the monetary value is valid (greater than zero).
      *
-     * @param value - The monetary value to be validated.
+     * @param value - The monetary value to be checked.
+     * @return true if value is greater than zero, false otherwise.
      */
-    private void validate(BigDecimal value) {
-        if (value == null) {
-            throw new IllegalArgumentException("Money value cannot be null");
-        }
-
-        if (value.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Money value cannot be negative");
-        }
+    public boolean isValid(BigDecimal value) {
+        return value != null && value.compareTo(BigDecimal.ZERO) > 0;
     }
 
     @Override
     public String toString() {
-        return "$" + value.toString(); // Return value with a currency symbol
+        return "$" + value.toString();
     }
 
     /**
@@ -58,7 +57,9 @@ public class Money {
      * @return A new Money instance after subtraction.
      */
     public Money subtract(BigDecimal amount) {
-        validateAmount(amount);
+        if (!isValid(amount)) {
+            throw new InvalidMoneyValueException("Amount must be greater than zero");
+        }
         return new Money(value.subtract(amount));
     }
 
@@ -69,34 +70,9 @@ public class Money {
      * @return A new Money instance after addition.
      */
     public Money add(BigDecimal amount) {
-        validateAmount(amount);
+        if (!isValid(amount)) {
+            throw new InvalidMoneyValueException("Amount must be greater than zero");
+        }
         return new Money(value.add(amount));
-    }
-
-    /**
-     * Validates the amount to ensure it's greater than zero.
-     *
-     * @param amount - The amount to be validated.
-     */
-    private void validateAmount(BigDecimal amount) {
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Amount must be greater than zero");
-        }
-    }
-
-    /**
-     * Doubles the current money value and returns a new Money object.
-     * If the value is zero, it returns Money.ZERO, and if the value is 1, it returns Money.TEN.
-     *
-     * @return A new Money instance with doubled value.
-     */
-    public Money doubleValue() {
-        if (value.compareTo(BigDecimal.ZERO) == 0) {
-            return ZERO;
-        } else if (value.compareTo(BigDecimal.ONE) == 0) {
-            return TEN;
-        } else {
-            return new Money(value.multiply(BigDecimal.valueOf(2)));
-        }
     }
 }
