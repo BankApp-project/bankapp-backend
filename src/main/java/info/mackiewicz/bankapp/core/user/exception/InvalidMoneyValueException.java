@@ -1,7 +1,10 @@
 package info.mackiewicz.bankapp.core.user.exception;
 
-public class InvalidMoneyValueException extends RuntimeException {
-    public InvalidMoneyValueException(String message) {
-        super(message);
+import info.mackiewicz.bankapp.core.user.model.interfaces.ErrorCode;
+
+public class InvalidMoneyValueException extends AccountBaseException {
+
+    public InvalidMoneyValueException(ErrorCode errorCode) {
+        super(errorCode.getCode(), errorCode.getMessage());
     }
 }
