@@ -1,0 +1,10 @@
+# SCM
+.git
+.gitignore
+
+# CI/CD configs
+.github/
+
+
+
+target
