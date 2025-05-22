@@ -27,6 +27,7 @@ public class DefaultTransactionValidator implements TransactionValidator {
         validateAccounts(transaction);
         validateSufficientFunds(transaction);
         validateSameOwnerForOwnTransfer(transaction);
+        log.debug("Transaction validation successful");
     }
 
     private void validateSufficientFunds(Transaction transaction) {
@@ -43,6 +44,7 @@ public class DefaultTransactionValidator implements TransactionValidator {
                     ". Required: " + transactionAmount +
                     ", Available: " + accountBalance);
         }
+        log.trace("Source account have sufficient funds");
     }
 
     @Override
@@ -63,6 +65,7 @@ public class DefaultTransactionValidator implements TransactionValidator {
         if (transaction == null) {
             throw new TransactionValidationException("Transaction cannot be null");
         }
+        log.trace("Transaction isn't null");
     }
 
     private void validateDifferentAccounts(Transaction transaction) {
@@ -74,6 +77,7 @@ public class DefaultTransactionValidator implements TransactionValidator {
             throw new TransactionAccountConflictException(
                     "Source and destination accounts is the same for transaction from: " + transaction.getSourceAccount().getFormattedIban());
         }
+        log.trace("Source and destination accounts are different");
     }
 
     private void validateAmount(Transaction transaction) {
@@ -83,18 +87,21 @@ public class DefaultTransactionValidator implements TransactionValidator {
         if (transaction.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
             throw new TransactionValidationException("Transaction amount must be positive");
         }
+        log.trace("Amount is positive and not zero");
     }
 
     private void validateType(Transaction transaction) {
         if (transaction.getType() == null) {
             throw new TransactionValidationException("Transaction type cannot be null");
         }
+        log.trace("Transaction type is not null");
     }
 
     private void validateAccountsNotNull(Transaction transaction) {
         if (transaction.getSourceAccount() == null && transaction.getDestinationAccount() == null) {
             throw new TransactionValidationException("Both accounts cannot be null");
         }
+        log.trace("At least one account is not null");
     }
 
     private void validateSameOwnerForOwnTransfer(Transaction transaction) {
@@ -108,6 +115,9 @@ public class DefaultTransactionValidator implements TransactionValidator {
                             "Own transfer must be between accounts of the same owner");
                 }
             }
+            log.trace("OWN_TRANSFER transaction is between accounts of the same owner.");
+        } else {
+            log.trace("Transaction is not own transfer");
         }
     }
 
@@ -122,6 +132,7 @@ public class DefaultTransactionValidator implements TransactionValidator {
             case FEE -> validateFeeAccounts(transaction);
             default -> throw new TransactionValidationException("Unsupported transaction category: " + category);
         }
+        log.trace("Transaction accounts are valid");
     }
 
     private void validateDepositAccounts(Transaction transaction) {
