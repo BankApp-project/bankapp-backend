@@ -1,12 +1,12 @@
--- 1. Enum dla typu transakcji
-CREATE TYPE transaction_type AS ENUM (
-    'DEPOSIT',
-    'FEE',
-    'TRANSFER_EXTERNAL',
-    'TRANSFER_INTERNAL',
-    'TRANSFER_OWN',
-    'WITHDRAWAL'
-);
+-- -- 1. Enum dla typu transakcji
+-- CREATE TYPE transaction_type AS ENUM (
+--     'DEPOSIT',
+--     'FEE',
+--     'TRANSFER_EXTERNAL',
+--     'TRANSFER_INTERNAL',
+--     'TRANSFER_OWN',
+--     'WITHDRAWAL'
+-- );
 
 -- 2. Tabela admins
 CREATE TABLE admins (
@@ -81,7 +81,7 @@ CREATE TABLE transactions (
     date           timestamp(6)        NULL,
     status         varchar(20)         NULL,
     title          varchar(100)        NULL,
-    type           transaction_type    NULL,
+    type           varchar(20)         NULL,
     destination_id integer             NULL,
     source_id      integer             NULL,
     CONSTRAINT FK4030424h0rpxm0q0tnl74pbkh
