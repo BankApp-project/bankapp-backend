@@ -193,21 +193,17 @@ BankApp/
 
 #### Steps
 
-1. **Clone repo**
-   ```bash
-   git clone https://github.com/Pawel-Mackiewicz/BankApp.git
-   cd BankApp
-   ```
+1. **Fork or clone repo**
 
 2. **DB Config**
     - Install docker
     ```bash
     # pull image from docker hub
     docker pull bankappproject/postgres_db:clean
-    # rum image in detached and map 5432 port
+    # run image in detached mode and map 5432 port
     docker run -p 5432:5432 -d bankappproject/postgres_db:clean
     ```
-3. Configure resend.com (if you skip this, your local app won't be able to send emails.)
+3. **Configure resend.com** (if you skip this, your local app won't be able to send emails.)
    - Fill in the `.env` file with your credentials, use `.env.example`:
    ```dotenv
     # Application configuration
