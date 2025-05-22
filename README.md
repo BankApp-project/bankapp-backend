@@ -207,7 +207,7 @@ BankApp/
     # rum image in detached and map 5432 port
     docker run -p 5432:5432 -d bankappproject/postgres_db:clean
     ```
-   
+3. Configure resend.com (if you skip this, your local app won't be able to send emails.)
    - Fill in the `.env` file with your credentials, use `.env.example`:
    ```dotenv
     # Application configuration
