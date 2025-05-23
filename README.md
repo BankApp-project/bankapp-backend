@@ -228,6 +228,23 @@ BankApp/
    mvn spring-boot:run
    ```
    
+### How to run locally (Docker)
+If you prefer to run the application in a Docker container,
+you can use the provided Dockerfile.
+
+Make sure to have Docker installed and running on your machine.
+
+Edit, the `docker-compose.yaml` file to set your own `RESEND_API_KEY`,
+then run the following command in the root directory of the project:
+
+```bash
+docker-compose up
+```
+
+This will build the whole setup for you, including the database and application. The application will be available at `http://localhost:8080`.
+
+---
+
 The application is configured to check for an admin api user on startup. If you've set the `SPRING_SECURITY_USER_NAME` and `SPRING_SECURITY_USER_PASSWORD` in your `.env` file, an admin account will be automatically created on first run.
 
    The application will be available at: `http://localhost:8080`

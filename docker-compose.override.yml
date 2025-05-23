@@ -1,0 +1,10 @@
+services:
+  bankapp:
+    volumes:
+      - ./src:/app/src
+      - ./pom.xml:/app/pom.xml
+      - ~/.m2:/root/.m2
+    command: ["./mvnw", "spring-boot:run", "-Dspring-boot.run.profiles=dev"]
+    environment:
+      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
+      SPRING_PROFILES_ACTIVE: dev

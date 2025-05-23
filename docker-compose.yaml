@@ -1,0 +1,81 @@
+networks:
+  bankapp-net:
+    driver: bridge
+volumes:
+  db-data:
+  redis-data:
+services:
+  db:
+    image: mysql:8.0
+    container_name: bankapp-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: bankapp
+      MYSQL_USER:  bankapp_user
+      MYSQL_PASSWORD: bankapp_pass
+      MYSQL_ROOT_PASSWORD: rootpass
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - bankapp-net
+    healthcheck:
+      test: ["CMD-SHELL",
+             "mysqladmin ping -h localhost -ubankapp_user -pbankapp_pass"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  redis:
+    image: redis:7-alpine
+    container_name: bankapp-redis
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    networks:
+      - bankapp-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  bankapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bankapp:latest
+    container_name: bankapp-app
+    restart: on-failure
+    environment:
+      # ── Database & Cache ──────────────────────────────────────────────────────
+      SPRING_DATASOURCE_URL:      jdbc:mysql://db:3306/bankapp
+      SPRING_DATASOURCE_USERNAME: bankapp_user
+      SPRING_DATASOURCE_PASSWORD: bankapp_pass
+      SPRING_REDIS_HOST:          redis
+      SPRING_REDIS_PORT:          6379
+
+      # ── Security (admin user) ─────────────────────────────────────────────────
+      SPRING_SECURITY_USER_NAME:     admin
+      SPRING_SECURITY_USER_PASSWORD: admin123
+
+      # ── Email / Resend API ───────────────────────────────────────────────────
+      RESEND_API_KEY: re_... # generate by your own https://resend.com/ :)
+
+      APP_BASE_URL:   http://localhost:8080
+
+      # ── Active Profile ────────────────────────────────────────────────────────
+      SPRING_PROFILES_ACTIVE: dev
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+      - "5005:5005"       # optional debug port
+    networks:
+      - bankapp-net
+    healthcheck:
+      test: ["CMD-SHELL",
+             "curl -f http://localhost:8080/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
