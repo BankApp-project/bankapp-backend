@@ -1,6 +1,6 @@
 DO $$
 BEGIN
-  -- Sprawdź, czy użytkownik już istnieje (np. po username, ale tu po id)
+  -- Check if user already exists
   IF NOT EXISTS (
     SELECT 1 FROM users WHERE id = -1
   ) THEN
@@ -26,7 +26,7 @@ BEGIN
       TRUE,   -- enabled
       FALSE,  -- not expired
       FALSE,  -- not locked
-      '${bank_password}',  -- ← Uzupełnij np. z aplikacji
+      '${bank_password}',  -- ← fill in .env
       'bankapp',
       0,
       '2025-02-08',
