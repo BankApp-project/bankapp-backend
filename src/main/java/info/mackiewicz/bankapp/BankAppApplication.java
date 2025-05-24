@@ -45,7 +45,7 @@ public class BankAppApplication {
 
     @EventListener(ApplicationReadyEvent.class)
     public void checkResendApiKey() {
-        if (resendApiKey == null || resendApiKey.isBlank() || resendApiKey.equals("your_resend_api_key")) {
+        if (resendApiKey == null || resendApiKey.isBlank() || resendApiKey.equals("re_...")) {
             System.err.println("ERROR: RESEND_API_KEY must be provided as an environment variable");
             System.exit(1);        }
     }
