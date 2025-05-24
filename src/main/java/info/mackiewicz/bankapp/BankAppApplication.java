@@ -26,12 +26,10 @@ public class BankAppApplication {
     @Value("${server.address}")
     private String serverAddress;
 
+    @Value("${app.resend.api-key}")
+    private String resendApiKey;
+
     public static void main(String[] args) {
-        String apiKey = System.getenv("RESEND_API_KEY");
-        if (apiKey == null || apiKey.isEmpty() || apiKey.isBlank()) {
-            System.err.println("ERROR: RESEND_API_KEY must be provided as an environment variable");
-            System.exit(1);
-        }
         SpringApplication.run(BankAppApplication.class, args);
     }
 
@@ -43,5 +41,12 @@ public class BankAppApplication {
         logger.info("Operating system: {} ({})",
             System.getProperty("os.name"),
             System.getProperty("os.arch"));
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void checkResendApiKey() {
+        if (resendApiKey == null || resendApiKey.isBlank() || resendApiKey.equals("your_resend_api_key")) {
+            System.err.println("ERROR: RESEND_API_KEY must be provided as an environment variable");
+            System.exit(1);        }
     }
 }

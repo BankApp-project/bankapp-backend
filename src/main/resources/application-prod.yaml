@@ -19,7 +19,7 @@ spring:
       password: ${SPRING_SECURITY_USER_PASSWORD}
   # Database configuration
   datasource:
-    url: jdbc:postgresql://${DB_URL:localhost}:${DB_PORT:3006}/${DB_SCHEMA:bankapp}
+    url: jdbc:postgresql://${DB_URL:localhost}:${DB_PORT:5432}/${DB_SCHEMA:bankapp}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
