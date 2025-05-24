@@ -147,6 +147,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
+<!--            imo there, we should specify version for backward compability. -->
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>

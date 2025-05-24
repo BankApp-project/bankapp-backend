@@ -1,7 +1,3 @@
-# lifehack, you can use this file to have a dev version of the app running
-# here you can use different env variables
-# then you can run the app with that parameter to have it running with dev profile
-# -Dspring.profiles.active=dev
 # Server configuration
 server:
   address: 0.0.0.0
