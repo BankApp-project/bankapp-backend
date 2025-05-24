@@ -48,3 +48,46 @@ jobs:
         with:
           name: coverage-report
           path: target/site/jacoco/
+
+  compose-smoke-tests:
+    name: Docker Compose Smoke Test
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4.2.2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.10.0
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3.4.0
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Validate docker-compose.yml
+        run: docker compose -f docker-compose.yaml config --quiet
+
+      - name: Build & start services
+        run: |
+          docker compose -f docker-compose.yaml up --build --detach
+
+      - name: Wait for application to be healthy
+        run: |
+          echo "Waiting for application to be healthy..."
+          for i in {1..30}; do
+            if curl -- fail http://localhost:8080/actuator/health; then
+                echo "Application is healthy!"
+                exit 0
+            else
+                echo "Application is not healthy yet, retrying in 10 seconds... ($i/10)"
+                sleep 10
+            fi
+          done
+          echo "Application did not become healthy in time!"
+          docker compose logs bankapp
+          exit 1
+      - name: Tear down services
+        if: always()
+        run: docker compose -f docker-compose.yaml down --volumes --remove-orphans
