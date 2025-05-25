@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Static patterns definition -->
+    <property name="CONSOLE_LOG_PATTERN" value="%d{HH:mm:ss} %highlight(%-5level) %cyan(%logger{36}) [%X] - %msg%n" />
+    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} [%X] - %msg%n" />
+    <property name="SQL_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} [%thread] SQL %-5level %logger{36} [%X] - %msg%n" />
+
+    <!-- Test file appender -->
+    <appender name="TEST_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/test.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/test.%d{yyyy-MM-dd-HH}.log</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="TEST_ROOT_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/test-root.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/test-root.%d{yyyy-MM-dd-HH}.log</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Configuration for test environment -->
+        <!-- Application logger -->
+        <logger name="info.mackiewicz.bankapp" level="DEBUG" additivity="false">
+            <appender-ref ref="TEST_FILE" />
+        </logger>
+
+        <!-- Root logger -->
+        <root level="WARN">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="TEST_ROOT_FILE" />
+        </root>
+</configuration>
