@@ -245,7 +245,7 @@ Edit, the `docker-compose.yaml` file to set your own `RESEND_API_KEY`,
 then run the following command in the root directory of the project:
 
 ```bash
-docker-compose up
+docker compose up
 ```
 
 This will build the whole setup for you, including the database and application. The application will be available at `http://localhost:8080`.
