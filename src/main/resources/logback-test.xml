@@ -6,77 +6,6 @@
     <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} [%X] - %msg%n" />
     <property name="SQL_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} [%thread] SQL %-5level %logger{36} [%X] - %msg%n" />
 
-    <!-- Appenders for both profiles -->
-    <!-- Console appender for both profiles -->
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
-        </encoder>
-    </appender>
-
-    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/dev.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/test.%d{yyyy-MM-dd-HH}.log</fileNamePattern>
-            <maxHistory>7</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>${LOG_PATTERN}</pattern>
-        </encoder>
-    </appender>
-
-    <!-- Console SQL Appender  -->
-    <appender name="SQL_MARKER" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>${SQL_LOG_PATTERN}</pattern>
-        </encoder>
-    </appender>
-
-    <!-- Appenders for files. Used only in `dev` profile -->
-    <appender name="APP_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/application.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/application.%d{yyyy-MM-dd-HH}.log</fileNamePattern>
-            <maxHistory>7</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>${FILE_LOG_PATTERN}</pattern>
-        </encoder>
-    </appender>
-
-    <appender name="DEBUG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/debug.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/debug.%d{yyyy-MM-dd-HH}.log</fileNamePattern>
-            <maxHistory>7</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>${FILE_LOG_PATTERN}</pattern>
-        </encoder>
-    </appender>
-
-    <appender name="FRAMEWORK_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/framework.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/framework.%d{yyyy-MM-dd-HH}.log</fileNamePattern>
-            <maxHistory>7</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>${FILE_LOG_PATTERN}</pattern>
-        </encoder>
-    </appender>
-
-    <appender name="SQL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/sql.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/sql.%d{yyyy-MM-dd-HH}.log</fileNamePattern>
-            <maxHistory>7</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>${FILE_LOG_PATTERN}</pattern>
-        </encoder>
-    </appender>
-
     <!-- Test file appender -->
     <appender name="TEST_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/test.log</file>
@@ -100,103 +29,7 @@
         </encoder>
     </appender>
 
-    <!-- Configuration for production environment -->
-    <springProfile name="prod">
-        <!-- Loggers for production profile -->
-        <logger name="info.mackiewicz.bankapp" level="INFO" additivity="false">
-            <appender-ref ref="CONSOLE" />
-        </logger>
-
-        <logger name="org.springframework" level="INFO" additivity="false">
-            <appender-ref ref="CONSOLE" />
-        </logger>
-
-        <logger name="org.hibernate" level="INFO" additivity="false">
-            <appender-ref ref="CONSOLE" />
-        </logger>
-
-        <logger name="ch.qos.logback" level="WARN" additivity="false">
-            <appender-ref ref="CONSOLE" />
-        </logger>
-
-        <logger name="org.springframework.security" level="INFO" additivity="false">
-            <appender-ref ref="CONSOLE" />
-        </logger>
-
-        <logger name="org.springframework.web" level="INFO" additivity="false">
-            <appender-ref ref="CONSOLE" />
-        </logger>
-
-        <logger name="org.hibernate.SQL" level="INFO" additivity="false">
-            <appender-ref ref="SQL_MARKER" />
-        </logger>
-
-        <logger name="org.hibernate.type.descriptor.sql" level="INFO" additivity="false">
-            <appender-ref ref="SQL_MARKER" />
-        </logger>
-
-        <!-- Root logger for production -->
-        <root level="INFO">
-            <appender-ref ref="CONSOLE" />
-        </root>
-    </springProfile>
-
-    <!-- Configuration for developement -->
-    <springProfile name="dev">
-        <!-- Application logger -->
-        <logger name="info.mackiewicz.bankapp" level="DEBUG" additivity="false">
-            <appender-ref ref="CONSOLE" />
-            <appender-ref ref="APP_FILE" />
-        </logger>
-
-        <!-- Framework loggers -->
-        <logger name="org.springframework" level="INFO" additivity="false">
-            <appender-ref ref="CONSOLE" />
-            <appender-ref ref="FRAMEWORK_FILE" />
-        </logger>
-
-        <logger name="org.hibernate" level="INFO" additivity="false">
-            <appender-ref ref="FRAMEWORK_FILE" />
-            <appender-ref ref="SQL_FILE" />
-        </logger>
-
-        <logger name="ch.qos.logback" level="WARN" additivity="false">
-            <appender-ref ref="CONSOLE" />
-            <appender-ref ref="FRAMEWORK_FILE" />
-        </logger>
-
-        <!-- Security logs -->
-        <logger name="org.springframework.security" level="INFO" additivity="false">
-            <appender-ref ref="CONSOLE" />
-            <appender-ref ref="APP_FILE" />
-        </logger>
-
-        <!-- Web layer logs -->
-        <logger name="org.springframework.web" level="WARN" additivity="false">
-            <appender-ref ref="CONSOLE" />
-            <appender-ref ref="APP_FILE" />
-        </logger>
-
-        <!-- SQL logs -->
-        <logger name="org.hibernate.SQL" level="INFO" additivity="false">
-            <appender-ref ref="SQL_MARKER" />
-            <appender-ref ref="APP_FILE" />
-        </logger>
-
-        <logger name="org.hibernate.type.descriptor.sql" level="INFO" additivity="false">
-            <appender-ref ref="SQL_MARKER" />
-            <appender-ref ref="APP_FILE" />
-        </logger>
-
-        <!-- Root logger -->
-        <root level="INFO">
-            <appender-ref ref="CONSOLE" />
-            <appender-ref ref="DEBUG_FILE" />
-        </root>
-    </springProfile>
-
     <!-- Configuration for test environment -->
-    <springProfile name="test">
         <!-- Application logger -->
         <logger name="info.mackiewicz.bankapp" level="DEBUG" additivity="false">
             <appender-ref ref="TEST_FILE" />
@@ -207,5 +40,4 @@
             <appender-ref ref="CONSOLE" />
             <appender-ref ref="TEST_ROOT_FILE" />
         </root>
-    </springProfile>
 </configuration>
