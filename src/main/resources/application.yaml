@@ -90,6 +90,7 @@ bankapp:
 
   # Logging configuration
 logging:
+  config: classpath:logback-${SPRING_PROFILES_ACTIVE}.xml
   stacktrace:
     enabled: false
 #     level:

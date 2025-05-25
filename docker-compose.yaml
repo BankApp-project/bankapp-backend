@@ -57,12 +57,11 @@ services:
       SPRING_SECURITY_USER_PASSWORD: admin123
 
       # ── Email / Resend API ───────────────────────────────────────────────────
-      RESEND_API_KEY: re_... # generate by your own https://resend.com/ :)
-
+      RESEND_API_KEY: ${RESEND_API_KEY}
       APP_BASE_URL:   http://localhost:8080
 
       # ── Active Profile ────────────────────────────────────────────────────────
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
     depends_on:
       db:
         condition: service_healthy
