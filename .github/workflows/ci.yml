@@ -98,4 +98,4 @@ jobs:
           exit 1
       - name: Tear down services
         if: always()
-        run: docker compose -f docker-compose.yaml down --volumes --remove-orphans%     
+        run: docker compose -f docker-compose.yaml down --volumes --remove-orphans
