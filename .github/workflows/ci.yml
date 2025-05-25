@@ -2,15 +2,25 @@ name: Java CI with Maven
 
 on:
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main ]
 
 jobs:
+  version-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Detect version change of semantic version in pom.xml
+        run: |
+            CURRENT_VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
+            if git tag | grep -q "^v$CURRENT_VERSION$"; then
+                echo "Version $CURRENT_VERSION already exists in tags. Exiting."
+                exit 1
+            fi
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v4.7.1
         with:
           java-version: '21'
           distribution: 'temurin'
@@ -37,7 +47,7 @@ jobs:
       # Continue with an upload only if files exist
       - name: Upload Test Results
         if: steps.check_files.outputs.files_exists == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: test-results
           path: target/surefire-reports/
@@ -48,7 +58,6 @@ jobs:
         with:
           name: coverage-report
           path: target/site/jacoco/
-
   compose-smoke-tests:
     name: Docker Compose Smoke Test
     needs: build
@@ -89,4 +98,4 @@ jobs:
           exit 1
       - name: Tear down services
         if: always()
-        run: docker compose -f docker-compose.yaml down --volumes --remove-orphans
+        run: docker compose -f docker-compose.yaml down --volumes --remove-orphans%     
