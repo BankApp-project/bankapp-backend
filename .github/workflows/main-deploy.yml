@@ -6,6 +6,13 @@ on:
       - main
     tags:
       - 'v*.*.*'
+    workflow_dispatch:
+      # in future we can add params like this, but for now YOLO
+      # inputs:
+      #   version:
+      #     description: 'Version to deploy'
+      #     required: false
+      #     default: 'latest'
 
 env:
   IMAGE_NAME: bankapp
