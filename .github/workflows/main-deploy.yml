@@ -62,5 +62,5 @@ jobs:
             docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
             cd /home/bankapp
-            docker-compose down
-            docker-compose up -d
+            docker compose down
+            docker compose up -d
