@@ -1,0 +1,39 @@
+name: Create Git Tag from pom.xml
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install xmllint
+        run: sudo apt-get install -y libxml2-utils
+      - name: Checkout code
+        uses: actions/checkout@v4.2.2  
+
+      - name: Extract version from pom.xml
+        id: get_version
+        run: |
+          VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "version=v${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Safety check against duplicate tags
+        run: |
+          if git rev-parse "v${{ env.VERSION }}" >/dev/null 2>&1; then
+            echo "Tag v${{ env.VERSION }} already exists. Exiting."
+            exit 1
+          else
+            echo "Tag v${{ env.VERSION }} does not exist. Proceeding."
+          fi
+
+      - name: Create and push Git tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git tag v${{ env.VERSION }}
+          git push origin v${{ env.VERSION }}
