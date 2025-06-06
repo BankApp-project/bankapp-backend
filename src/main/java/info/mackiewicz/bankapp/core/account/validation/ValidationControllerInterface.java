@@ -1,6 +1,7 @@
 package info.mackiewicz.bankapp.core.account.validation;
 
 import info.mackiewicz.bankapp.core.account.validation.dto.ValidationResponse;
+import info.mackiewicz.bankapp.shared.config.ApiConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * <p>
  * Note: Authentication is required. The user must be logged in to access these endpoints.
  */
-@SecurityRequirement(name = "cookieAuth")
+@SecurityRequirement(name = ApiConstants.BASIC_AUTH_SCHEME_NAME)
 @Tag(name = "Account ID Validation", description = "Operations for validating data such as IBAN and email addresses")
 @RequestMapping("/api/account/validate")
 public interface ValidationControllerInterface {
