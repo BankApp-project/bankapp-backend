@@ -3,6 +3,7 @@ package info.mackiewicz.bankapp.presentation.auth.registration.controller;
 import info.mackiewicz.bankapp.presentation.auth.registration.dto.RegistrationRequest;
 import info.mackiewicz.bankapp.presentation.auth.registration.dto.RegistrationResponse;
 import info.mackiewicz.bankapp.presentation.auth.registration.dto.demo.DemoRegistrationRequest;
+import info.mackiewicz.bankapp.shared.config.ApiConstants;
 import info.mackiewicz.bankapp.system.error.handling.dto.BaseApiError;
 import info.mackiewicz.bankapp.system.error.handling.dto.ValidationApiError;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,6 +11,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +20,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@RequestMapping("/api/public/registration")
+@SecurityRequirements
 @Tag(name = "Registration", description = "API for user registration")
+@RequestMapping("/api/public/registration")
 public interface RegistrationController {
 
     @Operation(
