@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * the @AuthenticationPrincipal annotation in the controller implementation.
  */
 @SecurityRequirement(name = ApiConstants.BASIC_AUTH_SCHEME_NAME)
+@Tag(name = "User Settings", description = "API for managing user settings such as username and password")
 @RequestMapping("/api/settings")
 public interface SettingsRestControllerInterface {
 
