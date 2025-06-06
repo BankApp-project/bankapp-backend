@@ -408,7 +408,7 @@ The actual scope depends on how many people get involved and how fast we progres
 
 ---
 
-### Who am I looking for?
+### Who are We looking for?
 
 - **UI/UX Designers** – if you enjoy crafting modern, user-friendly interfaces, I’m looking for you!
 - **Frontend Developers** – if you’re comfortable with React, Angular, Svelte, or any modern framework, and you’re up to working with APIs, hop on board!
@@ -420,14 +420,7 @@ The actual scope depends on how many people get involved and how fast we progres
 
 ---
 
-### Who is already on board?
-
-- **Project Manager** – keeps our work organized, helps divide tasks, and makes sure everything is running smoothly.
-- **Me (Pawel)** – junior Java developer, backend enthusiast, project initiator, always full of ideas and motivation.
-- **A few people for frontend and testing** – already involved and getting ready to kick off the project with us!
----
-
-### What do I offer?
+### What do We offer?
 
 - 100% remote work—when and as much as you want.
 - Experience working on a real app (not just tutorials).
@@ -438,11 +431,8 @@ The actual scope depends on how many people get involved and how fast we progres
 
 ### Want to join?
 
-Just drop me a message:  
-- **On GitHub**  
-- Or email: [bankapp@mackiewicz.info](mailto:bankapp@mackiewicz.info)
-
-Say a few words about yourself, what you do, what you’d like to work on in the project, or what you want to learn. We’ll figure the rest out together!
+Just come and join Our discord community server! 
+Grab an invite [here](https://discord.gg/9YVuAbPmQc)
 
 Thanks for stopping by—see you soon!
 
