@@ -15,6 +15,8 @@ services:
       POSTGRES_DB:       bankapp
       POSTGRES_USER:     bankapp_user
       POSTGRES_PASSWORD: bankapp_pass
+    ports:
+      - "5432:5432"
     volumes:
       - pg-data:/var/lib/postgresql/data
     networks:
@@ -41,7 +43,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: bankapp:latest
+    image: bankappproject/bankapp:latest
     container_name: bankapp-app
     restart: on-failure
     environment:
