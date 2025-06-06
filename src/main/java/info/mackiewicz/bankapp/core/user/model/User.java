@@ -45,24 +45,32 @@ public class User extends BaseUser implements PersonalInfo, AccountOwner {
     @Column(name = "role")
     @OnDelete(action = OnDeleteAction.CASCADE)
     protected Set<String> roles;
+
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "pesel", unique = true, nullable = false))
     private Pesel pesel;
+
     @Column(nullable = false)
     private String firstname;
+
     @Column(nullable = false)
     private String lastname;
+
     @Column(nullable = false)
     private LocalDate dateOfBirth;
+
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "email", unique = true, nullable = false))
     private EmailAddress email;
+
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "phone_number", unique = true, nullable = false))
     private PhoneNumber phoneNumber;
+
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Account> accounts;
+
     @Column(name = "account_counter")
     private Integer accountCounter;
 
@@ -76,6 +84,11 @@ public class User extends BaseUser implements PersonalInfo, AccountOwner {
         initializeDefaultRoles();
         accounts = new HashSet<>();
         accountCounter = 0;
+    }
+
+    private void initializeDefaultRoles() {
+        roles = new HashSet<>();
+        roles.add("ROLE_USER");
     }
 
     User(String password, Pesel pesel, String firstname, String lastname, LocalDate dateOfBirth,
@@ -103,11 +116,6 @@ public class User extends BaseUser implements PersonalInfo, AccountOwner {
      */
     public static UserBuilder.FirstnameStep builder() {
         return UserBuilder.builder();
-    }
-
-    private void initializeDefaultRoles() {
-        roles = new HashSet<>();
-        roles.add("ROLE_USER");
     }
 
     /**
