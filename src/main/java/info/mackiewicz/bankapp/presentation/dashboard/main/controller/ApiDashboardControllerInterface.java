@@ -25,12 +25,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * Interface defining dashboard API endpoints.
  * Provides contract for account information and user dashboard operations.
  */
-@Tag(name = "User Dashboard", description = "API for managing user dashboard information such as balance")
+@Tag(name = "User Dashboard", description = "API for managing user dashboard information")
 @SecurityRequirement(name = ApiConstants.BASIC_AUTH_SCHEME_NAME)
 @RequestMapping("/api/dashboard")
 public interface ApiDashboardControllerInterface {
 
+    /**
+     * Retrieves information about all accounts associated with the authenticated user.
+     *
+     * @param owner the authenticated user whose account information is requested; cannot be null
+     *
+     * @return a ResponseEntity containing a UserAccountsInfoResponse object that holds details
+     * about the user's accounts
+     */
+    @Operation(
+            summary = "Get user accounts information",
+            description = "Retrieves information about all accounts associated with the authenticated user, including account details and basic account metadata."
+    )
     ResponseEntity<UserAccountsInfoResponse> getAccountsInfo(@NotNull @AuthenticationPrincipal User owner);
+
     /**
      * Retrieves the working balance for a specific account
      *
