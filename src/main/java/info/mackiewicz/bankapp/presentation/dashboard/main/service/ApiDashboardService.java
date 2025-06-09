@@ -26,6 +26,16 @@ public class ApiDashboardService {
     private final TransactionRepository transactionRepository;
 
 
+    /**
+     * Fetches information about all accounts associated with a specific user.
+     * Retrieves a list of accounts owned by the user, converts the account data
+     * into a format suitable for the dashboard, and prepares a response object.
+     *
+     * @param userId the unique identifier of the user whose account information needs to be retrieved
+     *
+     * @return a {@code UserAccountsInfoResponse} object containing the user ID and
+     * a list of dashboard-compatible account information
+     */
     public UserAccountsInfoResponse getAccountsInfo(int userId) {
         log.info("Fetching user's accounts...");
         List<Account> accounts = accountService.getAccountsByOwnersId(userId);
