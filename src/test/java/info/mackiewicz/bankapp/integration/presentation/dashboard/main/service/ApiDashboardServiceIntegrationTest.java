@@ -5,7 +5,6 @@ import info.mackiewicz.bankapp.core.account.model.Account;
 import info.mackiewicz.bankapp.core.account.model.TestAccountBuilder;
 import info.mackiewicz.bankapp.core.account.model.interfaces.DashboardAccountInfo;
 import info.mackiewicz.bankapp.core.account.repository.AccountRepository;
-import info.mackiewicz.bankapp.core.account.service.AccountService;
 import info.mackiewicz.bankapp.core.transaction.model.Transaction;
 import info.mackiewicz.bankapp.core.transaction.model.TransactionStatus;
 import info.mackiewicz.bankapp.core.transaction.model.TransactionType;
@@ -58,10 +57,6 @@ class ApiDashboardServiceIntegrationTest {
 
     @Autowired
     private IntegrationTestAccountService testAccountService;
-
-    @Autowired
-    private AccountService accountService;
-
 
     private Account testAccount;
     private Account otherTestAccount;
