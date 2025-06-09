@@ -26,7 +26,7 @@ public class ApiDashboardService {
     private final TransactionRepository transactionRepository;
 
 
-    public UserAccountsInfoResponse getAccountsInfos(int userId) {
+    public UserAccountsInfoResponse getAccountsInfo(int userId) {
         log.info("Fetching user's accounts...");
         List<Account> accounts = accountService.getAccountsByOwnersId(userId);
         List<DashboardAccountInfo> accountsInfos = new ArrayList<>();

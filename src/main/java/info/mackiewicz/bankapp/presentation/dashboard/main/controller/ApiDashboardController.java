@@ -35,7 +35,7 @@ public class ApiDashboardController implements ApiDashboardControllerInterface {
 
         MDC.put("UserID", owner.getId().toString());
         try {
-            UserAccountsInfoResponse response = dashboardService.getAccountsInfos(owner.getId());
+            UserAccountsInfoResponse response = dashboardService.getAccountsInfo(owner.getId());
             return ResponseEntity.ok().body(response);
         } finally {
             MDC.clear();
