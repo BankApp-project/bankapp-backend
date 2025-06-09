@@ -1,7 +1,6 @@
 package info.mackiewicz.bankapp.core.account.model.adapter;
 
 import info.mackiewicz.bankapp.core.account.model.Account;
-import info.mackiewicz.bankapp.core.account.model.interfaces.AccountInfo;
 import info.mackiewicz.bankapp.core.account.model.interfaces.DashboardAccountInfo;
 import lombok.NonNull;
 
