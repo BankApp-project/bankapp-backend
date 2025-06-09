@@ -12,7 +12,7 @@ import org.springframework.lang.NonNull;
 @RequiredArgsConstructor
 public class AccountInfoAdapter implements AccountInfo {
 
-    private final Account account;
+    protected final Account account;
 
     /**
      * Creates an AccountInfo adapter from an Account object.
