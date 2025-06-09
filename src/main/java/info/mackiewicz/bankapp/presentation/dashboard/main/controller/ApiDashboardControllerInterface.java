@@ -1,6 +1,7 @@
 package info.mackiewicz.bankapp.presentation.dashboard.main.controller;
 
 import info.mackiewicz.bankapp.core.user.model.User;
+import info.mackiewicz.bankapp.presentation.dashboard.main.controller.dto.UserAccountsInfoResponse;
 import info.mackiewicz.bankapp.presentation.dashboard.main.controller.dto.WorkingBalanceResponse;
 import info.mackiewicz.bankapp.shared.config.ApiConstants;
 import info.mackiewicz.bankapp.system.error.handling.dto.BaseApiError;
@@ -17,7 +18,6 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/api/dashboard")
 public interface ApiDashboardControllerInterface {
 
+    ResponseEntity<UserAccountsInfoResponse> getAccountsInfo(@NotNull @AuthenticationPrincipal User owner);
     /**
      * Retrieves the working balance for a specific account
      *
@@ -78,7 +79,6 @@ public interface ApiDashboardControllerInterface {
                     content = @Content
             )
     })
-    @GetMapping("/account/{accountId}/balance/working")
     ResponseEntity<WorkingBalanceResponse> getWorkingBalance(
             @Parameter(
                     description = "Account identifier",

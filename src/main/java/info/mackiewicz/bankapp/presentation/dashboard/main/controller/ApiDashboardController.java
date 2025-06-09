@@ -1,6 +1,7 @@
 package info.mackiewicz.bankapp.presentation.dashboard.main.controller;
 
 import info.mackiewicz.bankapp.core.user.model.User;
+import info.mackiewicz.bankapp.presentation.dashboard.main.controller.dto.UserAccountsInfoResponse;
 import info.mackiewicz.bankapp.presentation.dashboard.main.controller.dto.WorkingBalanceResponse;
 import info.mackiewicz.bankapp.presentation.dashboard.main.service.ApiDashboardService;
 import info.mackiewicz.bankapp.system.shared.IdAccountAuthorizationService;
@@ -27,8 +28,22 @@ public class ApiDashboardController implements ApiDashboardControllerInterface {
     private final ApiDashboardService dashboardService;
     private final IdAccountAuthorizationService authorizationService;
 
-    @GetMapping("/account/{accountId}/balance/working")
+
     @Override
+    @GetMapping("/accounts/info")
+    public ResponseEntity<UserAccountsInfoResponse> getAccountsInfo(@NotNull @AuthenticationPrincipal User owner) {
+
+        MDC.put("UserID", owner.getId().toString());
+        try {
+            UserAccountsInfoResponse response = dashboardService.getAccountsInfos(owner.getId());
+            return ResponseEntity.ok().body(response);
+        } finally {
+            MDC.clear();
+        }
+    }
+
+    @Override
+    @GetMapping("/accounts/{accountId}/balance/working")
     public ResponseEntity<WorkingBalanceResponse> getWorkingBalance(
             @Min(1) @NotNull @PathVariable Integer accountId,
             @NotNull @AuthenticationPrincipal User owner
