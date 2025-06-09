@@ -27,14 +27,15 @@ public class ApiDashboardService {
 
 
     public UserAccountsInfoResponse getAccountsInfos(int userId) {
-
+        log.info("Fetching user's accounts...");
         List<Account> accounts = accountService.getAccountsByOwnersId(userId);
         List<DashboardAccountInfo> accountsInfos = new ArrayList<>();
 
         accounts.forEach(acc -> {
+            log.debug("Account ID {} infos saved to response", acc.getId());
             accountsInfos.add(DashboardAccountInfoAdapter.fromAccount(acc));
         });
-
+        log.debug("User's accounts infos saving completed");
         return new UserAccountsInfoResponse(userId, accountsInfos);
     }
     /**
