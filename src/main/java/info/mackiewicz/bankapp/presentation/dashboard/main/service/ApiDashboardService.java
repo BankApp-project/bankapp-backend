@@ -1,22 +1,42 @@
 package info.mackiewicz.bankapp.presentation.dashboard.main.service;
 
 import info.mackiewicz.bankapp.core.account.exception.AccountNotFoundByIdException;
+import info.mackiewicz.bankapp.core.account.model.Account;
+import info.mackiewicz.bankapp.core.account.model.adapter.DashboardAccountInfoAdapter;
+import info.mackiewicz.bankapp.core.account.model.interfaces.DashboardAccountInfo;
 import info.mackiewicz.bankapp.core.account.repository.AccountRepository;
+import info.mackiewicz.bankapp.core.account.service.AccountService;
 import info.mackiewicz.bankapp.core.transaction.repository.TransactionRepository;
+import info.mackiewicz.bankapp.presentation.dashboard.main.controller.dto.UserAccountsInfoResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ApiDashboardService {
 
+    private final AccountService accountService;
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
 
+
+    public UserAccountsInfoResponse getAccountsInfos(int userId) {
+
+        List<Account> accounts = accountService.getAccountsByOwnersId(userId);
+        List<DashboardAccountInfo> accountsInfos = new ArrayList<>();
+
+        accounts.forEach(acc -> {
+            accountsInfos.add(DashboardAccountInfoAdapter.fromAccount(acc));
+        });
+
+        return new UserAccountsInfoResponse(userId, accountsInfos);
+    }
     /**
      * Calculates the working balance of an account by subtracting the amount on hold
      * from the available account balance. The operation retrieves the account's balance
