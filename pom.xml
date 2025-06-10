@@ -100,11 +100,6 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
         <dependency>
@@ -112,24 +107,10 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
-
-        <!-- Logging tools -->
+        <!-- For testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-logging</artifactId>
-        </dependency>
-
-        <!-- JUnit for testing -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>5.11.4</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.11.4</version>
+            <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -138,8 +119,6 @@
             <version>4.2.2</version>
             <scope>test</scope>
         </dependency>
-
-        <!-- Spring Security Test -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
@@ -151,6 +130,11 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
 <!--            imo there, we should specify version for backward compability. -->
+        </dependency>
+        <!-- Redis for Cache -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -166,9 +150,7 @@
             <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
 
-
         <!-- OTHERS -->
-
         <dependency>
             <groupId>org.iban4j</groupId>
             <artifactId>iban4j</artifactId>
