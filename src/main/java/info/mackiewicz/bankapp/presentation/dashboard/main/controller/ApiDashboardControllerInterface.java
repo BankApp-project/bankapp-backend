@@ -1,6 +1,7 @@
 package info.mackiewicz.bankapp.presentation.dashboard.main.controller;
 
 import info.mackiewicz.bankapp.core.user.model.User;
+import info.mackiewicz.bankapp.presentation.dashboard.main.controller.dto.UserAccountsInfoResponse;
 import info.mackiewicz.bankapp.presentation.dashboard.main.controller.dto.WorkingBalanceResponse;
 import info.mackiewicz.bankapp.shared.config.ApiConstants;
 import info.mackiewicz.bankapp.system.error.handling.dto.BaseApiError;
@@ -17,7 +18,6 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -25,10 +25,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * Interface defining dashboard API endpoints.
  * Provides contract for account information and user dashboard operations.
  */
-@Tag(name = "User Dashboard", description = "API for managing user dashboard information such as balance")
+@Tag(name = "User Dashboard", description = "API for managing user dashboard information")
 @SecurityRequirement(name = ApiConstants.BASIC_AUTH_SCHEME_NAME)
 @RequestMapping("/api/dashboard")
 public interface ApiDashboardControllerInterface {
+
+    /**
+     * Retrieves information about all accounts associated with the authenticated user.
+     *
+     * @param owner the authenticated user whose account information is requested; cannot be null
+     *
+     * @return a ResponseEntity containing a UserAccountsInfoResponse object that holds details
+     * about the user's accounts
+     */
+    @Operation(
+            summary = "Get user accounts information",
+            description = "Retrieves information about all accounts associated with the authenticated user, including account details and basic account metadata."
+    )
+    ResponseEntity<UserAccountsInfoResponse> getAccountsInfo(@NotNull @AuthenticationPrincipal User owner);
 
     /**
      * Retrieves the working balance for a specific account
@@ -78,7 +92,6 @@ public interface ApiDashboardControllerInterface {
                     content = @Content
             )
     })
-    @GetMapping("/account/{accountId}/balance/working")
     ResponseEntity<WorkingBalanceResponse> getWorkingBalance(
             @Parameter(
                     description = "Account identifier",

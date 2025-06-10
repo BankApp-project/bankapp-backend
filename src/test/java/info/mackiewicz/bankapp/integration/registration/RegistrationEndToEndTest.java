@@ -30,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
@@ -122,10 +121,10 @@ class RegistrationEndToEndTest {
         assertNotNull(savedUser.getId());
 
         // Verify bank account created for the user
-        Optional<List<Account>> userAccounts = accountRepository.findAccountsByOwner_id(savedUser.getId());
+        List<Account> userAccounts = accountRepository.findAccountsByOwner_id(savedUser.getId());
 
         assertFalse(userAccounts.isEmpty(), "User should have a bank account created");
-        Account userAccount = userAccounts.get().getFirst();
+        Account userAccount = userAccounts.getFirst();
 
         // Verify bonus and email service calls
         verify(bonusGrantingService).grantWelcomeBonus(eq(userAccount.getIban()), eq(welcomeBonusAmount));

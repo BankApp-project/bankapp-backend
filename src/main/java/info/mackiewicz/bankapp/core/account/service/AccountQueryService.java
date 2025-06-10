@@ -47,9 +47,7 @@ class AccountQueryService {
     }
 
     List<Account> getAccountsByOwnersId(Integer id) {
-        return accountRepository.findAccountsByOwner_id(id)
-                .orElseThrow(() -> new OwnerAccountsNotFoundException(
-                        String.format("User with ID: %s does not have any account.", id)));
+        return accountRepository.findAccountsByOwner_id(id);
     }
 
     List<Account> getAccountsByOwnersPesel(Pesel pesel) {

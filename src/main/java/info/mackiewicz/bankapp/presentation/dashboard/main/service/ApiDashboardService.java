@@ -1,22 +1,53 @@
 package info.mackiewicz.bankapp.presentation.dashboard.main.service;
 
 import info.mackiewicz.bankapp.core.account.exception.AccountNotFoundByIdException;
+import info.mackiewicz.bankapp.core.account.model.Account;
+import info.mackiewicz.bankapp.core.account.model.adapter.DashboardAccountInfoAdapter;
+import info.mackiewicz.bankapp.core.account.model.interfaces.DashboardAccountInfo;
 import info.mackiewicz.bankapp.core.account.repository.AccountRepository;
+import info.mackiewicz.bankapp.core.account.service.AccountService;
 import info.mackiewicz.bankapp.core.transaction.repository.TransactionRepository;
+import info.mackiewicz.bankapp.presentation.dashboard.main.controller.dto.UserAccountsInfoResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ApiDashboardService {
 
+    private final AccountService accountService;
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
 
+
+    /**
+     * Fetches information about all accounts associated with a specific user.
+     * Retrieves a list of accounts owned by the user, converts the account data
+     * into a format suitable for the dashboard, and prepares a response object.
+     *
+     * @param userId the unique identifier of the user whose account information needs to be retrieved
+     *
+     * @return a {@code UserAccountsInfoResponse} object containing the user ID and
+     * a list of dashboard-compatible account information
+     */
+    public UserAccountsInfoResponse getAccountsInfo(int userId) {
+        log.info("Fetching user's accounts...");
+        List<Account> accounts = accountService.getAccountsByOwnersId(userId);
+        List<DashboardAccountInfo> accountsInfos = new ArrayList<>();
+
+        accounts.forEach(acc -> {
+            log.debug("Account ID {} infos saved to response", acc.getId());
+            accountsInfos.add(DashboardAccountInfoAdapter.fromAccount(acc));
+        });
+        log.debug("User's accounts infos saving completed");
+        return new UserAccountsInfoResponse(userId, accountsInfos);
+    }
     /**
      * Calculates the working balance of an account by subtracting the amount on hold
      * from the available account balance. The operation retrieves the account's balance

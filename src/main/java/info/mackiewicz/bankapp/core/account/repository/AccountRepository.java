@@ -16,7 +16,8 @@ import java.util.Optional;
 public interface AccountRepository extends JpaRepository<Account, Integer> {
     Optional<List<Account>> findAccountsByOwner_pesel(Pesel ownerPESEL);
     Optional<List<Account>> findAccountsByOwner_username(String ownerUsername);
-    Optional<List<Account>> findAccountsByOwner_id(Integer ownerId);
+
+    List<Account> findAccountsByOwner_id(Integer ownerId);
     Optional<Account> findFirstByOwner_email(EmailAddress email);
     
     Optional<Account> findByIban(Iban iban);

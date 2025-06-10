@@ -207,7 +207,7 @@ class AccountQueryServiceTest {
         Account testAccount = getTestAccount();
         List<Account> accounts = Collections.singletonList(testAccount);
         when(accountRepository.findAccountsByOwner_id(TEST_OWNER_ID))
-            .thenReturn(Optional.of(accounts));
+                .thenReturn(accounts);
 
         // when
         List<Account> result = accountQueryService.getAccountsByOwnersId(TEST_OWNER_ID);
@@ -216,5 +216,17 @@ class AccountQueryServiceTest {
         assertEquals(EXPECTED_SINGLE_RESULT_SIZE, result.size());
         assertEquals(testAccount, result.getFirst());
         verify(accountRepository).findAccountsByOwner_id(TEST_OWNER_ID);
+    }
+
+    @Test
+    void getAccountsByOwnersId_WhenAccountsNotExist_ShouldReturnEmptyList() {
+        // given
+        List<Account> accounts = Collections.emptyList();
+        when(accountRepository.findAccountsByOwner_id(TEST_OWNER_ID))
+                .thenReturn(accounts);
+
+        List<Account> actualAccounts = accountQueryService.getAccountsByOwnersId(TEST_OWNER_ID);
+        // when & then
+        assertEquals(accounts, actualAccounts);
     }
 }

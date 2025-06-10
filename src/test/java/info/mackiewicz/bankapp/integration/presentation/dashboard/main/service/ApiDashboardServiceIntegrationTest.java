@@ -3,6 +3,7 @@ package info.mackiewicz.bankapp.integration.presentation.dashboard.main.service;
 import info.mackiewicz.bankapp.core.account.exception.AccountNotFoundByIdException;
 import info.mackiewicz.bankapp.core.account.model.Account;
 import info.mackiewicz.bankapp.core.account.model.TestAccountBuilder;
+import info.mackiewicz.bankapp.core.account.model.interfaces.DashboardAccountInfo;
 import info.mackiewicz.bankapp.core.account.repository.AccountRepository;
 import info.mackiewicz.bankapp.core.transaction.model.Transaction;
 import info.mackiewicz.bankapp.core.transaction.model.TransactionStatus;
@@ -12,6 +13,7 @@ import info.mackiewicz.bankapp.core.user.model.User;
 import info.mackiewicz.bankapp.integration.utils.IntegrationTestAccountService;
 import info.mackiewicz.bankapp.integration.utils.IntegrationTestConfig;
 import info.mackiewicz.bankapp.integration.utils.IntegrationTestUserService;
+import info.mackiewicz.bankapp.presentation.dashboard.main.controller.dto.UserAccountsInfoResponse;
 import info.mackiewicz.bankapp.presentation.dashboard.main.service.ApiDashboardService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,9 +29,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -54,7 +57,6 @@ class ApiDashboardServiceIntegrationTest {
 
     @Autowired
     private IntegrationTestAccountService testAccountService;
-
 
     private Account testAccount;
     private Account otherTestAccount;
@@ -97,7 +99,74 @@ class ApiDashboardServiceIntegrationTest {
     }
 
     @Test
-    @DisplayName("Should calculate working balance correctly")
+    @DisplayName("getAccountsInfo(): shouldReturnUserAccountsInfoWhenUserHasAccounts")
+    void shouldReturnUserAccountsInfoWhenUserHasAccounts() {
+        // given
+        updateAccountBalance(testAccount, DEFAULT_INITIAL_BALANCE);
+
+        int userId = testUser.getId();
+
+        // when
+        UserAccountsInfoResponse response = apiDashboardService.getAccountsInfo(userId);
+
+        Optional<DashboardAccountInfo> accountInfo = response.getAccountsInfos().stream()
+                .filter(info -> info.getId().equals(testAccount.getId()))
+                .findFirst();
+
+        //then
+        assertEquals(response.getUserId(), userId);
+        assertNotNull(response.getAccountsInfos(), "Accounts info list should not be null");
+        assertTrue(accountInfo.isPresent());
+
+        DashboardAccountInfo info = accountInfo.get();
+        assertEquals(testAccount.getId(), info.getId());
+        assertEquals(testUser.getFullName(), info.getOwnerFullname());
+        assertEquals(testAccount.getFormattedIban(), info.getFormattedIban());
+        assertEquals(DEFAULT_INITIAL_BALANCE, info.getBalance());
+    }
+
+    @Test
+    @DisplayName("getAccountsInfo(): Should return empty list when user don't have any accounts")
+    void shouldThrowExceptionWhenUserDontHaveAccounts() {
+        User newUser = testUserService.createRandomTestUser();
+        int userId = newUser.getId();
+
+        // when
+        UserAccountsInfoResponse response = apiDashboardService.getAccountsInfo(userId);
+
+        Optional<DashboardAccountInfo> accountInfo = response.getAccountsInfos().stream()
+                .filter(info -> info.getId().equals(testAccount.getId()))
+                .findFirst();
+
+        //then
+        assertEquals(response.getUserId(), userId);
+        assertTrue(newUser.getAccounts().isEmpty());
+        assertTrue(accountInfo.isEmpty());
+    }
+
+    @Test
+    @DisplayName("getAccountsInfo(): Should return only accounts for specific user")
+    void shouldReturnOnlyAccountsForSpecificUser() {
+        // Given
+        User usr1 = testUserService.createRandomTestUser();
+        User usr2 = testUserService.createRandomTestUser();
+        Account testAcc1 = testAccountService.createTestAccount(usr1.getId());
+        Account testAcc2 = testAccountService.createTestAccount(usr2.getId());
+        Account testAcc3 = testAccountService.createTestAccount(usr1.getId());
+
+        // When
+        UserAccountsInfoResponse response = apiDashboardService.getAccountsInfo(usr1.getId());
+
+        // Then
+        assertThat(response.getUserId()).isEqualTo(usr1.getId());
+        assertThat(response.getAccountsInfos()).hasSize(2);
+        assertThat(response.getAccountsInfos())
+                .extracting(DashboardAccountInfo::getId)
+                .containsExactlyInAnyOrder(testAcc1.getId(), testAcc3.getId());
+    }
+
+    @Test
+    @DisplayName("getWorkingBalance(): Should calculate working balance correctly")
     void shouldCalculateWorkingBalance() {
         // given
         updateAccountBalance(testAccount, DEFAULT_INITIAL_BALANCE);
@@ -148,7 +217,7 @@ class ApiDashboardServiceIntegrationTest {
     }
 
     @Test
-    @DisplayName("Should throw exception when account not found")
+    @DisplayName("getWorkingBalance(): Should throw exception when account not found")
     void shouldThrowExceptionWhenAccountNotFound() {
         // given
         int nonExistentAccountId = 9999;
@@ -160,7 +229,7 @@ class ApiDashboardServiceIntegrationTest {
     }
 
     @Test
-    @DisplayName("Should return correct working balance when no pending transactions exist")
+    @DisplayName("getWorkingBalance(): Should return correct working balance when no pending transactions exist")
     void shouldReturnCorrectWorkingBalanceWhenNoHoldTransactions() {
         // given
         updateAccountBalance(testAccount, DEFAULT_INITIAL_BALANCE);
@@ -188,7 +257,7 @@ class ApiDashboardServiceIntegrationTest {
     }
 
     @Test
-    @DisplayName("Should handle multiple pending transactions")
+    @DisplayName("getWorkingBalance(): Should handle multiple pending transactions")
     void shouldHandleMultiplePendingTransactions() {
         // given
         BigDecimal initialBalance = new BigDecimal("2000.00");
@@ -215,7 +284,7 @@ class ApiDashboardServiceIntegrationTest {
     }
 
     @Test
-    @DisplayName("Should handle zero account balance")
+    @DisplayName("getWorkingBalance(): Should handle zero account balance")
     void shouldHandleZeroBalance() {
         // given
         BigDecimal initialBalance = BigDecimal.ZERO;
@@ -234,7 +303,7 @@ class ApiDashboardServiceIntegrationTest {
     }
 
     @Test
-    @DisplayName("Should handle large amount transactions")
+    @DisplayName("getWorkingBalance(): Should handle large amount transactions")
     void shouldHandleLargeAmounts() {
         // given
         BigDecimal initialBalance = new BigDecimal("10000000.00");
@@ -253,7 +322,7 @@ class ApiDashboardServiceIntegrationTest {
     }
 
     @Test
-    @DisplayName("Should correctly ignore incoming transactions")
+    @DisplayName("getWorkingBalance(): Should correctly ignore incoming transactions")
     void shouldCorrectlyIgnoreIncomingTransactions() {
         // given
         BigDecimal initialBalance = new BigDecimal("1000.00");
@@ -283,7 +352,7 @@ class ApiDashboardServiceIntegrationTest {
             "1000.00, 1000.00, 0.00",
             "1000.00, 1001.00, -1.00"
     })
-    @DisplayName("Should handle various balance and hold amount combinations")
+    @DisplayName("getWorkingBalance(): Should handle various balance and hold amount combinations")
     void shouldHandleVariousBalanceAndHoldAmountCombinations(
             String initialBalanceStr, String holdAmountStr, String expectedBalanceStr) {
         // given
@@ -305,7 +374,7 @@ class ApiDashboardServiceIntegrationTest {
     }
 
     @Test
-    @DisplayName("Should handle concurrent transaction status changes")
+    @DisplayName("getWorkingBalance(): Should handle concurrent transaction status changes")
     void shouldHandleConcurrentTransactionStatusChanges() {
         // given
         updateAccountBalance(testAccount, DEFAULT_INITIAL_BALANCE);
@@ -331,7 +400,7 @@ class ApiDashboardServiceIntegrationTest {
     }
 
     @Test
-    @DisplayName("Should handle account with negative balance")
+    @DisplayName("getWorkingBalance(): Should handle account with negative balance")
     void shouldHandleNegativeBalance() {
         // given
         BigDecimal initialBalance = new BigDecimal("-500.00");
