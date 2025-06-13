@@ -8,6 +8,7 @@ import info.mackiewicz.bankapp.core.transaction.exception.TransactionBuildingExc
 import info.mackiewicz.bankapp.core.transaction.exception.TransactionValidationException;
 import info.mackiewicz.bankapp.core.transaction.model.Transaction;
 import info.mackiewicz.bankapp.core.transaction.model.TransactionType;
+import info.mackiewicz.bankapp.core.transaction.model.builder.TransferBuilder;
 import info.mackiewicz.bankapp.core.transaction.service.TransactionService;
 import info.mackiewicz.bankapp.system.banking.operations.controller.dto.TransactionRequest;
 import info.mackiewicz.bankapp.system.banking.operations.service.helpers.TransactionBuildingService;
@@ -98,13 +99,14 @@ public class TransferOperationService {
      * @throws TransactionBuildingException   if the transaction cannot be built
      * @throws TransactionValidationException if the transaction fails validation
      */
-    private Transaction createTransferTransaction(TransactionRequest transferRequest, Account sourceAccount,
-                                                  Account destinationAccount) {
-        return transactionBuilderService.buildTransferTransaction(
-                transferRequest.getAmount(),
-                transferRequest.getTitle(),
-                sourceAccount,
-                destinationAccount);
+    private Transaction createTransferTransaction(TransactionRequest transferRequest, Account sourceAccount, Account destinationAccount) {
+        TransferBuilder transferBuilder = Transaction.buildTransfer();
+        return transferBuilder
+                .from(sourceAccount)
+                .to(destinationAccount)
+                .withAmount(transferRequest.getAmount())
+                .withTitle(transferRequest.getTitle())
+                .build();
     }
 
 }
