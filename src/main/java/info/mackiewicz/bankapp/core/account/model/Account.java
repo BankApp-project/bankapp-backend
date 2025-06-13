@@ -53,6 +53,15 @@ public class Account implements AccountInfo {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User owner;
 
+    /**
+     * -- SETTER --
+     *  Sets the balance of the account.
+     *
+     * @param newBalance The new balance to set
+     *
+     *
+     */
+    @Setter
     @Getter
     private BigDecimal balance;
 
@@ -88,17 +97,6 @@ public class Account implements AccountInfo {
      */
     public static AccountFactory factory() {
         return new AccountFactory();
-    }
-
-    /**
-     * Sets the balance of the account.
-     *
-     * @param newBalance The new balance to set
-     *
-     * @throws SecurityException if called from an unauthorized context
-     */
-    public void setBalance(BigDecimal newBalance) {
-        this.balance = newBalance;
     }
 
     /**
