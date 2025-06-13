@@ -100,8 +100,7 @@ public class TransferOperationService {
      * @throws TransactionValidationException if the transaction fails validation
      */
     private Transaction createTransferTransaction(TransactionRequest transferRequest, Account sourceAccount, Account destinationAccount) {
-        TransferBuilder transferBuilder = Transaction.buildTransfer();
-        return transferBuilder
+        return Transaction.buildTransfer().
                 .from(sourceAccount)
                 .to(destinationAccount)
                 .withAmount(transferRequest.getAmount())
