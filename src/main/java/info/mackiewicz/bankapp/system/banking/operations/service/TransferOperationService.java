@@ -108,5 +108,4 @@ public class TransferOperationService {
                 .withTitle(transferRequest.getTitle())
                 .build();
     }
-
 }
