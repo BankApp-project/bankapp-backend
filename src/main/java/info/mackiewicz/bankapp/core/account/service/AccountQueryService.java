@@ -51,15 +51,21 @@ class AccountQueryService {
     }
 
     List<Account> getAccountsByOwnersPesel(Pesel pesel) {
-        return accountRepository.findAccountsByOwner_pesel(pesel)
-                .orElseThrow(() -> new OwnerAccountsNotFoundException(
-                        String.format("User with PESEL %s does not have any account.", pesel)));
+        List<Account> accounts = accountRepository.findAccountsByOwner_pesel(pesel);
+        if (accounts.isEmpty()) {
+            throw new OwnerAccountsNotFoundException(
+                    String.format("User with PESEL %s does not have any account.", pesel));
+        }
+        return accounts;
     }
 
     List<Account> getAccountsByOwnersUsername(String username) {
-        return accountRepository.findAccountsByOwner_username(username)
-                .orElseThrow(() -> new OwnerAccountsNotFoundException(
-                        String.format("User with username: %s does not have any account.", username)));
+        List<Account> accounts = accountRepository.findAccountsByOwner_username(username);
+        if (accounts.isEmpty()) {
+            throw new OwnerAccountsNotFoundException(
+                    String.format("User with username: %s does not have any account.", username));
+        }
+        return accounts;
     }
 
     List<Account> getAllAccounts() {
