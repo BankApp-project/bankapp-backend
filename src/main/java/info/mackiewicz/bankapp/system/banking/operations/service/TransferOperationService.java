@@ -28,7 +28,6 @@ import java.util.function.Supplier;
 @Slf4j
 public class TransferOperationService {
 
-    private final TransactionBuildingService transactionBuilderService;
     private final TransactionService transactionService;
     private final TransactionProcessingService transactionProcessingService;
     private final AccountServiceInterface accountService;
@@ -100,7 +99,7 @@ public class TransferOperationService {
      * @throws TransactionValidationException if the transaction fails validation
      */
     private Transaction createTransferTransaction(TransactionRequest transferRequest, Account sourceAccount, Account destinationAccount) {
-        return Transaction.buildTransfer().
+        return Transaction.buildTransfer()
                 .from(sourceAccount)
                 .to(destinationAccount)
                 .withAmount(transferRequest.getAmount())
