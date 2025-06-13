@@ -116,7 +116,7 @@ class AccountQueryServiceTest {
         Account testAccount = getTestAccount();
         List<Account> accounts = Collections.singletonList(testAccount);
         when(accountRepository.findAccountsByOwner_pesel(TEST_PESEL))
-            .thenReturn(Optional.of(accounts));
+            .thenReturn(accounts);
 
         // when
         List<Account> result = accountQueryService.getAccountsByOwnersPesel(TEST_PESEL);
@@ -131,7 +131,7 @@ class AccountQueryServiceTest {
     void getAccountsByOwnersPESEL_WhenNoAccountsExist_ShouldThrowException() {
         // given
         when(accountRepository.findAccountsByOwner_pesel(NONEXISTENT_PESEL))
-            .thenReturn(Optional.empty());
+            .thenReturn(Collections.emptyList());
 
         // when & then
         assertThrows(OwnerAccountsNotFoundException.class,
@@ -145,8 +145,7 @@ class AccountQueryServiceTest {
         Account testAccount = getTestAccount();
         List<Account> accounts = Collections.singletonList(testAccount);
         when(accountRepository.findAccountsByOwner_username(TEST_USERNAME))
-            .thenReturn(Optional.of(accounts));
-
+            .thenReturn(accounts);
         // when
         List<Account> result = accountQueryService.getAccountsByOwnersUsername(TEST_USERNAME);
 
