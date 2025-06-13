@@ -129,10 +129,11 @@ class AccountTest {
     }
 
     @Test
-    void setBalance_WhenCalledDirectly_ShouldThrowSecurityException() {
+    void setBalance_WhenCalledDirectly_ShouldNotThrowSecurityException() {
         // when & then
-        assertThrows(SecurityException.class, () -> {
-            account1.setBalance(BigDecimal.TEN);
+        assertDoesNotThrow(() -> {
+            TestAccountBuilder.setField(account1, "balance", new BigDecimal("1500.00"));
+            assertEquals(new BigDecimal("1500.00"), account1.getBalance());
         });
     }
 

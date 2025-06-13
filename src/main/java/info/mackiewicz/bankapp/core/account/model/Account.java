@@ -5,11 +5,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import info.mackiewicz.bankapp.core.account.model.dto.AccountOwnerDTO;
 import info.mackiewicz.bankapp.core.account.model.interfaces.AccountInfo;
 import info.mackiewicz.bankapp.core.account.service.AccountService;
-import info.mackiewicz.bankapp.core.account.service.AccountServiceAccessManager;
 import info.mackiewicz.bankapp.core.account.util.IbanConverter;
 import info.mackiewicz.bankapp.core.user.model.User;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.iban4j.Iban;
@@ -53,6 +53,15 @@ public class Account implements AccountInfo {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User owner;
 
+    /**
+     * -- SETTER --
+     *  Sets the balance of the account.
+     *
+     * @param newBalance The new balance to set
+     *
+     *
+     */
+    @Setter
     @Getter
     private BigDecimal balance;
 
@@ -88,21 +97,6 @@ public class Account implements AccountInfo {
      */
     public static AccountFactory factory() {
         return new AccountFactory();
-    }
-
-    /**
-     * Sets the balance of the account.
-     * This method is protected by {@link AccountServiceAccessManager} and can only be called
-     * from AccountOperationsService.
-     * Any unauthorized access will result in a {@link SecurityException} being thrown.
-     *
-     * @param newBalance The new balance to set
-     *
-     * @throws SecurityException if called from an unauthorized context
-     */
-    public void setBalance(BigDecimal newBalance) {
-        AccountServiceAccessManager.checkServiceAccess();
-        this.balance = newBalance;
     }
 
     /**
