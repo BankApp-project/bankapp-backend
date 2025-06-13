@@ -187,61 +187,7 @@ BankApp/
 └── directory-tree.md                             # This file - project structure documentation
 ```
 
-### How to run locally
-
-#### Requirements
-
-- Java 21 or newer
-- Maven
-- Docker
-- Git
-- Resend.com account for email delivery
-
-#### Steps
-
-1. **Fork or clone repo**
-
-2. **DB Config**
-    - Install docker
-    ```bash
-    # pull image from docker hub
-    docker pull bankappproject/postgres_db:clean
-    # run image in detached mode and map 5432 port
-    docker run -p 5432:5432 -d bankappproject/postgres_db:clean
-    ```
-3. **Configure resend.com** (if you skip this, your local app won't be able to send emails.)
-    - Fill in the `.env` file with your credentials, use `.env.example`:
-   ```dotenv
-    # Application configuration
-    PORT=8080   # port at which the application will run                        (default is 8080)
-    SPRING_PROFILES_ACTIVE=dev  # active profile for the application (dev/prod) (default is dev)
-    
-    # Database configuration
-    DB_URL=localhost    #your_database_url_here     (default is localhost)
-    DB_PORT=5432        #your_database_port_here    (default is 3006)
-    DB_SCHEMA=bankapp   #your_database_schema_here  (default is bankapp)
-    DB_USERNAME=bankappuser
-    DB_PASSWORD=StrongP@ss123
-    
-    # Spring Security credentials
-    SPRING_SECURITY_USER_NAME=admin
-    SPRING_SECURITY_USER_PASSWORD=your_admin_str0nG_password
-    
-    # Resend email configuration
-    RESEND_API_KEY=your_resend_api_key # get if from https://resend.com
-    APP_BASE_URL=base_url_for_your_app # http://localhost:8080 for local development
-   ```
-
-3. **Build and Run**
-
-   `cd` to your bankapp repo and:
-   ```bash
-   mvn clean install
-   mvn spring-boot:run
-   ```
-   or use different way to run an app.
-
-### How to run locally (Docker)
+### How to run locally (for testing purposes)
 
 If you prefer to run the application in a Docker container,
 you can use the provided Dockerfile.
@@ -255,15 +201,79 @@ then run the following command in the root directory of the project:
 docker compose up
 ```
 
-This will build the whole setup for you, including the database and application. The application will be available at
-`http://localhost:8080`.
+This will build the whole setup for you, including the database and application.
+
+**The application will be available at: `http://localhost:8080`**
+
+### How to run locally (For BE Developers)
+
+##### Requirements
+
+- Java 21 or newer
+- Maven
+- Docker
+- Git
+- Resend.com account for email delivery
+
+#### Steps
+
+1. **Fork or clone repo**
+
+2. **DB Config**
+    - Install docker
+    - Pull db image from dockerhub and run it
+    ```bash
+    # pull image from docker hub
+    docker pull bankappproject/postgres_db:clean
+    # run image in detached mode and map 5432 port
+    docker run -p 5432:5432 -d bankappproject/postgres_db:clean
+    ```
+    - credentials:
+        - user: bankapp_user
+        - pass: bankapp_pass
+
+
+3. **Configure resend.com** (if you skip this, your local app won't be able to send emails.)
+    - Fill in the `.env` file with your credentials, use `.env.example`:
+   ```dotenv
+    # This is an example of a .env file for a Spring Boot application.
+    # Application configuration
+    PORT=8080   # port at which the application will run                        (default is 8080)
+    SPRING_PROFILES_ACTIVE=dev  # active profile for the application (dev/prod) (default is dev)
+    BANK_PASSWORD=bank_pass # password for The Bank account
+    
+    # Database configuration
+    DB_URL=localhost    #your_database_url_here     (default is localhost)
+    DB_PORT=5432        #your_database_port_here    (default is 5432 for PostgreSQL)
+    DB_SCHEMA=bankapp   #your_database_schema_here  (default is bankapp)
+    DB_USERNAME=bankapp_user
+    DB_PASSWORD=bankapp_pass
+    
+    # Redis configuration
+    REDIS_HOST=localhost
+    REDIS_PORT=6379
+    
+    # Spring Security credentials
+    SPRING_SECURITY_USER_NAME=admin
+    SPRING_SECURITY_USER_PASSWORD=your_admin_str0nG_password
+    
+    # Resend email configuration
+    RESEND_API_KEY: re_... # generate by your own at https://resend.com/ :)
+    APP_BASE_URL=http://localhost:8080 # leave as is for local development, if you deploy it on server - put your domain here
+
+    ```
+
+3. **Build and Run**
+
+   `cd` to your bankapp repo and:
+   ```bash
+   mvn clean install
+   mvn spring-boot:run
+   ```
+
+**The application will be available at: `http://localhost:8080`**
 
 ---
-
-The application is configured to check for an admin api user on startup. If you've set the `SPRING_SECURITY_USER_NAME`
-and `SPRING_SECURITY_USER_PASSWORD` in your `.env` file, an admin account will be automatically created on first run.
-
-The application will be available at: `http://localhost:8080`
 
 ### Key Features
 
