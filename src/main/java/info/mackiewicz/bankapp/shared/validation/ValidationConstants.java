@@ -38,7 +38,7 @@ public final class ValidationConstants {
      * This pattern ensures the title consists of letters, digits, and specific
      * allowable special characters including .,/?@!#&()- as well as spaces.
      */
-    public static final String TRANSFER_TITLE_PATTERN = "^[\\p{L}0-9.,/?@!#&()\\-\\s]+$";
+    public static final String TRANSFER_TITLE_PATTERN = "^[\\p{L}0-9.,/?@!%#&()\\-\\s]+$";
 
     /**
      * Regular expression pattern for validating email addresses.<br>
