@@ -65,7 +65,7 @@ springdoc:
   swagger-ui:
     docExpansion: list
   default-produces-media-type: application/json
-  show-actuator: false
+  show-actuator: true
   model-and-view-allowed: true
 
 app:

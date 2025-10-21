@@ -31,7 +31,7 @@ jobs:
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/bankapp:latest
 
       - name: Deploy on EC2 via SSH
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
@@ -39,3 +39,4 @@ jobs:
           script: |
             cd bankapp
             docker compose up -d --pull always
+          command_timeout: '30m'
