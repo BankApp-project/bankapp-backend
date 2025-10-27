@@ -6,24 +6,17 @@
 principles. Initially started as a multitasking and learning experiment, the project has evolved into a comprehensive
 showcase of best practices in back-end architecture and clean code.
 
-**Current State:**
-
-- The back-end is largely complete (outstanding tasks: securing endpoints, implementing caching).
-- The front-end is functional but slated for a major upgrade (moving from Thymeleaf to a modern JavaScript framework).
-- Collaboration and contributions are highly welcome!
-
 ---
 
 ## Project Details
 
 - **Name:** BankApp
-- **Purpose:** To demonstrate advanced software architecture, modular design, and portfolio-ready coding skills in a
+- **Purpose:** To demonstrate advanced software architecture, modular design and coding skills in a
   real-world banking application context.
 - **Tech Stack:**
-    - **Back-end:** Java, Spring, Hibernate, PostgreSQL, Redis, JUnit, Maven
+    - **Back-end:** Java, Spring Boot, Hibernate, PostgreSQL, JUnit, Maven
     - **Dev Tools / Infrastructure:** Git, Docker, AWS EC2/RDS, DockerHub, Linux
 - **Live Demo:** [bankapp.mackiewicz.info](http://bankapp.mackiewicz.info)
-- **Repository:** [github.com/Pawel-Mackiewicz/BankApp](https://github.com/Pawel-Mackiewicz/BankApp.git)
 
 ---
 
