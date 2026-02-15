@@ -55,10 +55,10 @@ spring:
     placeholder-replacement: true
     placeholders:
       bank_password: ${BANK_PASSWORD:password}
-  data:
-    redis:
-      host: ${REDIS_HOST:localhost}
-      port: ${REDIS_PORT:6379}
+#  data:
+#    redis:
+#      host: ${REDIS_HOST:localhost}
+#      port: ${REDIS_PORT:6379}
 
 # Swagger / OpenAPI configuration
 springdoc:
@@ -90,6 +90,8 @@ bankapp:
       iban: PL66485112340000000000000000
   restrictions:
     MaxAccountsPerUser: ${MAX_ACCOUNTS_PER_USER:3}
+  demo:
+    passwords: ${DEMO_PASSWORDS:DemoHaslo1!,DemoHaslo2@,DemoHaslo3$,DemoHaslo4%,DemoHaslo5&,DemoHaslo6*,DemoHaslo7!,DemoHaslo8@,DemoHaslo9?,DemoHaslo0!}
 
 
   # Logging configuration

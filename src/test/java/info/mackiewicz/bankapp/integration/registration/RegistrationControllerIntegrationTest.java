@@ -3,8 +3,9 @@ package info.mackiewicz.bankapp.integration.registration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import info.mackiewicz.bankapp.presentation.auth.registration.dto.RegistrationRequest;
 import info.mackiewicz.bankapp.presentation.auth.registration.dto.RegistrationResponse;
-import info.mackiewicz.bankapp.presentation.auth.registration.dto.demo.DemoRegistrationRequest;
+import info.mackiewicz.bankapp.presentation.auth.registration.dto.demo.DemoRegistrationResponse;
 import info.mackiewicz.bankapp.presentation.auth.registration.service.BonusGrantingService;
+import info.mackiewicz.bankapp.system.demo.data.DemoDataGenerator;
 import info.mackiewicz.bankapp.system.notification.email.EmailService;
 import info.mackiewicz.bankapp.testutils.TestRequestFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,8 +59,10 @@ class RegistrationControllerIntegrationTest {
     @MockitoBean
     private BonusGrantingService bonusGrantingService;
 
+    @MockitoBean
+    private DemoDataGenerator demoDataGenerator;
+
     private RegistrationRequest validRequest;
-    private DemoRegistrationRequest validDemoRequest;
 
     @BeforeEach
     void setUp() {
@@ -69,10 +72,6 @@ class RegistrationControllerIntegrationTest {
         validRequest = TestRequestFactory.createValidRegistrationRequest();
         // Set constant email for duplicate checking tests
         validRequest.setEmail(TEST_EMAIL);
-
-        // Prepare valid demo registration request
-        validDemoRequest = TestRequestFactory.createValidDemoRegistrationRequest();
-        validDemoRequest.setEmail(TEST_EMAIL);
     }
 
     @Test
@@ -148,71 +147,21 @@ class RegistrationControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("Should register a new demo user and return 201 status code")
-    void registerDemoUser_WhenValidRequest_ThenReturnCreatedStatus() throws Exception {
-        // Arrange
-        String requestJson = objectMapper.writeValueAsString(validDemoRequest);
-
-        // Act & Assert
+    @DisplayName("Should create a demo account and return 201 with credentials")
+    void registerDemoUser_WhenCalled_ThenReturnCreatedStatusWithCredentials() throws Exception {
+        // Act & Assert - no request body needed
         MvcResult result = mockMvc.perform(post(DEMO_REGISTRATION_ENDPOINT)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.email").value(TEST_EMAIL))
                 .andExpect(jsonPath("$.username").exists())
+                .andExpect(jsonPath("$.password").exists())
                 .andReturn();
 
         // Verify response
         String responseJson = result.getResponse().getContentAsString();
-        RegistrationResponse response = objectMapper.readValue(responseJson, RegistrationResponse.class);
+        DemoRegistrationResponse response = objectMapper.readValue(responseJson, DemoRegistrationResponse.class);
         assertNotNull(response);
-        assertEquals(TEST_EMAIL, response.email());
         assertNotNull(response.username());
-    }
-
-    @Test
-    @DisplayName("Should reject demo registration with invalid email format with 400 status code")
-    void registerDemoUser_WhenInvalidEmail_ThenReturnBadRequest() throws Exception {
-        // Arrange
-        DemoRegistrationRequest invalidEmailRequest = TestRequestFactory.createDemoRegistrationRequestWithInvalidEmail();
-        String requestJson = objectMapper.writeValueAsString(invalidEmailRequest);
-
-        // Act & Assert
-        mockMvc.perform(post(DEMO_REGISTRATION_ENDPOINT)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors[?(@.field=='" + EMAIL_FIELD + "')]").exists());
-    }
-
-    @Test
-    @DisplayName("Should reject demo registration with invalid password format with 400 status code")
-    void registerDemoUser_WhenInvalidPassword_ThenReturnBadRequest() throws Exception {
-        // Arrange
-        DemoRegistrationRequest invalidPasswordRequest = TestRequestFactory.createDemoRegistrationRequestWithInvalidPassword();
-        String requestJson = objectMapper.writeValueAsString(invalidPasswordRequest);
-
-        // Act & Assert
-        mockMvc.perform(post(DEMO_REGISTRATION_ENDPOINT)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors[?(@.field=='" + PASSWORD_FIELD + "')]").exists());
-    }
-
-    @Test
-    @DisplayName("Should reject demo registration with non-matching passwords with 400 status code")
-    void registerDemoUser_WhenNonMatchingPasswords_ThenReturnBadRequest() throws Exception {
-        // Arrange
-        DemoRegistrationRequest nonMatchingPasswordsRequest = TestRequestFactory.createDemoRegistrationRequestWithNonMatchingPasswords();
-        String requestJson = objectMapper.writeValueAsString(nonMatchingPasswordsRequest);
-
-        // Act & Assert
-        mockMvc.perform(post(DEMO_REGISTRATION_ENDPOINT)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors[?(@.field=='confirmPassword')]").exists());
-
+        assertNotNull(response.password());
     }
 }

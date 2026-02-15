@@ -26,33 +26,37 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-  redis:
-    image: redis:7-alpine
-    container_name: bankapp-redis
-    restart: unless-stopped
-    volumes:
-      - redis-data:/data
-    networks:
-      - bankapp-net
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+#  redis:
+#    image: redis:7-alpine
+#    container_name: bankapp-redis
+#    restart: unless-stopped
+#    volumes:
+#      - redis-data:/data
+#    networks:
+#      - bankapp-net
+#    healthcheck:
+#      test: ["CMD", "redis-cli", "ping"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
   bankapp:
     build:
       context: .
       dockerfile: Dockerfile
-    image: bankappproject/bankapp:latest
+    develop:
+      watch:
+        - action: rebuild
+          path: ./src
+#    image: bankappproject/bankapp:latest
     container_name: bankapp-app
     restart: on-failure
     environment:
       # ── Database & Cache ──────────────────────────────────────────────────────
-      SPRING_DATASOURCE_URL:      jdbc:postgresql://db:5432/bankapp
+      SPRING_DATASOURCE_URL:      jdbc:postgresql://db:5432/bankapp # why we wont use docker network?
       SPRING_DATASOURCE_USERNAME: bankapp_user
       SPRING_DATASOURCE_PASSWORD: bankapp_pass
-      SPRING_REDIS_HOST:          redis
-      SPRING_REDIS_PORT:          6379
+#      SPRING_REDIS_HOST:          redis
+#      SPRING_REDIS_PORT:          6379
 
       # ── Security (admin user) ─────────────────────────────────────────────────
       SPRING_SECURITY_USER_NAME:     admin
@@ -67,8 +71,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      redis:
-        condition: service_healthy
+#      redis:
+#        condition: service_healthy
     ports:
       - "8080:8080"
       - "5005:5005"       # optional debug port
