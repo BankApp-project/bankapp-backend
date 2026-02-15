@@ -4,8 +4,8 @@ import info.mackiewicz.bankapp.core.account.model.Account;
 import info.mackiewicz.bankapp.core.account.service.AccountService;
 import info.mackiewicz.bankapp.core.user.model.User;
 import info.mackiewicz.bankapp.core.user.service.UserService;
+import info.mackiewicz.bankapp.presentation.auth.registration.dto.RegistrationMapper;
 import info.mackiewicz.bankapp.presentation.auth.registration.dto.RegistrationRequest;
-import info.mackiewicz.bankapp.presentation.auth.registration.dto.RegistrationResponse;
 import info.mackiewicz.bankapp.presentation.auth.registration.dto.demo.DemoRegistrationResponse;
 import info.mackiewicz.bankapp.presentation.auth.registration.dto.demo.RegistrationRequestFactory;
 import info.mackiewicz.bankapp.presentation.auth.registration.dto.demo.RegistrationRequestFactory.DemoUserData;
@@ -16,8 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -30,7 +28,7 @@ class DemoRegistrationServiceTest {
     private static final String TEST_PASSWORD = "DemoHaslo1!";
 
     @Mock
-    private RegistrationService registrationService;
+    private RegistrationMapper registrationMapper;
 
     @Mock
     private RegistrationRequestFactory requestFactory;
@@ -59,21 +57,16 @@ class DemoRegistrationServiceTest {
         DemoUserData demoData = new DemoUserData(request, TEST_PASSWORD);
         when(requestFactory.createDemoRegistrationRequest()).thenReturn(demoData);
 
-        RegistrationResponse registrationResponse = RegistrationResponse.builder()
-                .withUsername(TEST_USERNAME)
-                .withFirstname("Janusz")
-                .withLastname("Kielbasa")
-                .withEmail("janusz@demo.bankapp")
-                .build();
-        when(registrationService.registerUser(any(RegistrationRequest.class))).thenReturn(registrationResponse);
-
         User mockUser = mock(User.class);
-        when(mockUser.getId()).thenReturn(100);
-        when(userService.getUserByUsername(TEST_USERNAME)).thenReturn(mockUser);
-        when(userService.updateUser(any(User.class))).thenReturn(mockUser);
+        when(registrationMapper.toUser(request)).thenReturn(mockUser);
+
+        User createdUser = mock(User.class);
+        when(createdUser.getId()).thenReturn(100);
+        when(createdUser.getUsername()).thenReturn(TEST_USERNAME);
+        when(userService.createUser(mockUser)).thenReturn(createdUser);
 
         Account mockAccount = mock(Account.class);
-        when(accountService.getAccountsByOwnersId(100)).thenReturn(List.of(mockAccount));
+        when(accountService.createAccount(100)).thenReturn(mockAccount);
 
         // Act
         DemoRegistrationResponse result = demoRegistrationService.registerDemoUser();
@@ -83,9 +76,10 @@ class DemoRegistrationServiceTest {
         assertEquals(TEST_PASSWORD, result.password());
 
         verify(requestFactory).createDemoRegistrationRequest();
-        verify(registrationService).registerUser(request);
+        verify(registrationMapper).toUser(request);
         verify(mockUser).setDemo(true);
-        verify(userService).updateUser(mockUser);
+        verify(userService).createUser(mockUser);
+        verify(accountService).createAccount(100);
         verify(demoDataGenerator).generateTransactionHistory(mockAccount);
     }
 
@@ -95,7 +89,10 @@ class DemoRegistrationServiceTest {
         RegistrationRequest request = mock(RegistrationRequest.class);
         DemoUserData demoData = new DemoUserData(request, TEST_PASSWORD);
         when(requestFactory.createDemoRegistrationRequest()).thenReturn(demoData);
-        doThrow(RuntimeException.class).when(registrationService).registerUser(any(RegistrationRequest.class));
+
+        User mockUser = mock(User.class);
+        when(registrationMapper.toUser(request)).thenReturn(mockUser);
+        doThrow(RuntimeException.class).when(userService).createUser(any(User.class));
 
         // Act & Assert
         assertThrows(DemoRegistrationException.class, () -> demoRegistrationService.registerDemoUser());

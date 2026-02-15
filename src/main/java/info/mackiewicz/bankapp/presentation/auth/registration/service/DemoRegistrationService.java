@@ -4,8 +4,8 @@ import info.mackiewicz.bankapp.core.account.model.Account;
 import info.mackiewicz.bankapp.core.account.service.AccountService;
 import info.mackiewicz.bankapp.core.user.model.User;
 import info.mackiewicz.bankapp.core.user.service.UserService;
+import info.mackiewicz.bankapp.presentation.auth.registration.dto.RegistrationMapper;
 import info.mackiewicz.bankapp.presentation.auth.registration.dto.RegistrationRequest;
-import info.mackiewicz.bankapp.presentation.auth.registration.dto.RegistrationResponse;
 import info.mackiewicz.bankapp.presentation.auth.registration.dto.demo.DemoRegistrationResponse;
 import info.mackiewicz.bankapp.presentation.auth.registration.dto.demo.RegistrationRequestFactory;
 import info.mackiewicz.bankapp.presentation.auth.registration.dto.demo.RegistrationRequestFactory.DemoUserData;
@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class DemoRegistrationService {
 
-    private final RegistrationService registrationService;
+    private final RegistrationMapper registrationMapper;
     private final RegistrationRequestFactory requestFactory;
     private final UserService userService;
     private final AccountService accountService;
@@ -42,27 +42,26 @@ public class DemoRegistrationService {
         try {
             log.info("Creating demo account");
 
-            // 1. Generate demo user data (funny name + random password)
+            // 1. Generate demo user data
             DemoUserData demoData = requestFactory.createDemoRegistrationRequest();
             RegistrationRequest request = demoData.request();
             String plaintextPassword = demoData.plaintextPassword();
 
-            // 2. Register user + account via normal flow (creates user, account, welcome bonus)
-            RegistrationResponse response = registrationService.registerUser(request);
-
-            // 3. Mark user as demo
-            User user = userService.getUserByUsername(response.username());
+            // 2. Create user with demo flag set before persistence
+            User user = registrationMapper.toUser(request);
             user.setDemo(true);
-            userService.updateUser(user);
+            User createdUser = userService.createUser(user);
 
-            // 4. Get the user's account and generate 2-month transaction history
-            Account demoAccount = accountService.getAccountsByOwnersId(user.getId()).getFirst();
+            // 3. Create account (no welcome bonus, no welcome email)
+            Account demoAccount = accountService.createAccount(createdUser.getId());
+
+            // 4. Generate 2-month transaction history
             demoDataGenerator.generateTransactionHistory(demoAccount);
 
-            log.info("Demo account created: username={}", response.username());
+            log.info("Demo account created: username={}", createdUser.getUsername());
 
             return DemoRegistrationResponse.builder()
-                    .withUsername(response.username())
+                    .withUsername(createdUser.getUsername())
                     .withPassword(plaintextPassword)
                     .build();
 
