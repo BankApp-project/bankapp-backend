@@ -109,25 +109,25 @@ public class DemoDataGenerator {
         log.info("Generating demo transaction history for account ID: {}", demoAccount.getId());
 
         List<Transaction> transactions = new ArrayList<>();
-        LocalDate today = LocalDate.now();
-        LocalDate startDate = today.minusMonths(HISTORY_MONTHS);
+        LocalDate endDate = LocalDate.now().minusDays(1);
+        LocalDate startDate = endDate.minusMonths(HISTORY_MONTHS).plusDays(1);
 
         BigDecimal balance = BigDecimal.ZERO;
 
         // Generate salary transactions (1x per month, around 15th)
-        balance = generateSalaryTransactions(demoAccount, transactions, startDate, today, balance);
+        balance = generateSalaryTransactions(demoAccount, transactions, startDate, endDate, balance);
 
         // Generate rent transactions (1x per month, around 1st-5th)
-        balance = generateRentTransactions(demoAccount, transactions, startDate, today, balance);
+        balance = generateRentTransactions(demoAccount, transactions, startDate, endDate, balance);
 
         // Generate daily coffee transactions
-        balance = generateCoffeeTransactions(demoAccount, transactions, startDate, today, balance);
+        balance = generateCoffeeTransactions(demoAccount, transactions, startDate, endDate, balance);
 
         // Generate random FrogShop transactions
-        balance = generateFrogShopTransactions(demoAccount, transactions, startDate, today, balance);
+        balance = generateFrogShopTransactions(demoAccount, transactions, startDate, endDate, balance);
 
         // Generate weekly Marek transactions (Wednesdays)
-        balance = generateMarekTransactions(demoAccount, transactions, startDate, today, balance);
+        balance = generateMarekTransactions(demoAccount, transactions, startDate, endDate, balance);
 
         transactionRepository.saveAll(transactions);
         demoAccount.setBalance(balance);
