@@ -30,6 +30,10 @@ import java.util.concurrent.ThreadLocalRandom;
 public class DemoDataGenerator {
 
     private static final int HISTORY_MONTHS = 2;
+    // Shared configuration
+    private static final int CURRENCY_DECIMAL_PLACES = 2;
+    private static final int MINUTES_PER_HOUR = 60;
+    private static final int PERCENTAGE_BASE = 100;
     // Salary titles
     private static final String[] SALARY_TITLES = {
             "Salary for hard work",
@@ -77,14 +81,14 @@ public class DemoDataGenerator {
 
     private static BigDecimal randomAmount(int minWhole, int maxWhole) {
         double value = minWhole + ThreadLocalRandom.current().nextDouble() * (maxWhole - minWhole);
-        return BigDecimal.valueOf(value).setScale(2, RoundingMode.HALF_UP);
+        return BigDecimal.valueOf(value).setScale(CURRENCY_DECIMAL_PLACES, RoundingMode.HALF_UP);
     }
 
     private static LocalTime randomTime(int minHour, int minMinute, int maxHour, int maxMinute) {
-        int minTotalMinutes = minHour * 60 + minMinute;
-        int maxTotalMinutes = maxHour * 60 + maxMinute;
+        int minTotalMinutes = minHour * MINUTES_PER_HOUR + minMinute;
+        int maxTotalMinutes = maxHour * MINUTES_PER_HOUR + maxMinute;
         int totalMinutes = ThreadLocalRandom.current().nextInt(minTotalMinutes, maxTotalMinutes + 1);
-        return LocalTime.of(totalMinutes / 60, totalMinutes % 60);
+        return LocalTime.of(totalMinutes / MINUTES_PER_HOUR, totalMinutes % MINUTES_PER_HOUR);
     }
 
     private static int randomInt(int min, int max) {
@@ -134,12 +138,19 @@ public class DemoDataGenerator {
 
     private BigDecimal generateSalaryTransactions(Account demoAccount, List<Transaction> transactions,
                                                    LocalDate startDate, LocalDate endDate, BigDecimal balance) {
+        final int SALARY_DAY_OF_MONTH = 15;
+        final int SALARY_MIN_AMOUNT = 6800;
+        final int SALARY_MAX_AMOUNT = 7200;
+        final int SALARY_TIME_HOUR = 15;
+        final int SALARY_TIME_MIN_MINUTE = 0;
+        final int SALARY_TIME_MAX_MINUTE = 30;
+
         Account acmeCorp = actorAccountProvider.getAcmeCorpAccount();
-        LocalDate date = startDate.withDayOfMonth(Math.min(15, startDate.lengthOfMonth()));
+        LocalDate date = startDate.withDayOfMonth(Math.min(SALARY_DAY_OF_MONTH, startDate.lengthOfMonth()));
 
         while (!date.isAfter(endDate)) {
-            BigDecimal amount = randomAmount(6800, 7200);
-            LocalDateTime dateTime = date.atTime(randomTime(15, 0, 15, 30));
+            BigDecimal amount = randomAmount(SALARY_MIN_AMOUNT, SALARY_MAX_AMOUNT);
+            LocalDateTime dateTime = date.atTime(randomTime(SALARY_TIME_HOUR, SALARY_TIME_MIN_MINUTE, SALARY_TIME_HOUR, SALARY_TIME_MAX_MINUTE));
 
             Transaction tx = new DemoTransferBuilder()
                     .from(acmeCorp)
@@ -152,8 +163,8 @@ public class DemoDataGenerator {
             balance = balance.add(amount);
 
             date = date.plusMonths(1);
-            if (date.getDayOfMonth() != 15) {
-                date = date.withDayOfMonth(Math.min(15, date.lengthOfMonth()));
+            if (date.getDayOfMonth() != SALARY_DAY_OF_MONTH) {
+                date = date.withDayOfMonth(Math.min(SALARY_DAY_OF_MONTH, date.lengthOfMonth()));
             }
         }
         return balance;
@@ -163,16 +174,24 @@ public class DemoDataGenerator {
 
     private BigDecimal generateRentTransactions(Account demoAccount, List<Transaction> transactions,
                                                  LocalDate startDate, LocalDate endDate, BigDecimal balance) {
+        final int RENT_MIN_DAY = 1;
+        final int RENT_MAX_DAY = 5;
+        final int RENT_MIN_AMOUNT = 2800;
+        final int RENT_MAX_AMOUNT = 3200;
+        final int RENT_TIME_MIN_HOUR = 10;
+        final int RENT_TIME_MAX_HOUR = 12;
+        final int RENT_TIME_MINUTE = 0;
+
         Account landlord = actorAccountProvider.getLandlordAccount();
         // Rent due around 1st-5th of each month
-        LocalDate date = startDate.withDayOfMonth(randomInt(1, 5));
+        LocalDate date = startDate.withDayOfMonth(randomInt(RENT_MIN_DAY, RENT_MAX_DAY));
         if (date.isBefore(startDate)) {
             date = date.plusMonths(1);
         }
 
         while (!date.isAfter(endDate)) {
-            BigDecimal amount = randomAmount(2800, 3200);
-            LocalDateTime dateTime = date.atTime(randomTime(10, 0, 12, 0));
+            BigDecimal amount = randomAmount(RENT_MIN_AMOUNT, RENT_MAX_AMOUNT);
+            LocalDateTime dateTime = date.atTime(randomTime(RENT_TIME_MIN_HOUR, RENT_TIME_MINUTE, RENT_TIME_MAX_HOUR, RENT_TIME_MINUTE));
 
             Transaction tx = new DemoTransferBuilder()
                     .from(demoAccount)
@@ -191,19 +210,26 @@ public class DemoDataGenerator {
 
     private BigDecimal generateCoffeeTransactions(Account demoAccount, List<Transaction> transactions,
                                                    LocalDate startDate, LocalDate endDate, BigDecimal balance) {
+        final int COFFEE_WEEKEND_PROBABILITY_PERCENT = 70;
+        final int COFFEE_MIN_AMOUNT = 15;
+        final int COFFEE_MAX_AMOUNT = 25;
+        final int COFFEE_TIME_MIN_HOUR = 7;
+        final int COFFEE_TIME_MAX_HOUR = 9;
+        final int COFFEE_TIME_MINUTE = 0;
+
         Account starbugs = actorAccountProvider.getStarbugsAccount();
         LocalDate date = startDate;
 
         while (!date.isAfter(endDate)) {
             // Skip weekends sometimes (70% chance of coffee on weekends)
             boolean isWeekend = date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
-            if (isWeekend && ThreadLocalRandom.current().nextInt(100) > 70) {
+            if (isWeekend && ThreadLocalRandom.current().nextInt(PERCENTAGE_BASE) > COFFEE_WEEKEND_PROBABILITY_PERCENT) {
                 date = date.plusDays(1);
                 continue;
             }
 
-            BigDecimal amount = randomAmount(15, 25);
-            LocalDateTime dateTime = date.atTime(randomTime(7, 0, 9, 0));
+            BigDecimal amount = randomAmount(COFFEE_MIN_AMOUNT, COFFEE_MAX_AMOUNT);
+            LocalDateTime dateTime = date.atTime(randomTime(COFFEE_TIME_MIN_HOUR, COFFEE_TIME_MINUTE, COFFEE_TIME_MAX_HOUR, COFFEE_TIME_MINUTE));
 
             Transaction tx = new DemoTransferBuilder()
                     .from(demoAccount)
@@ -222,14 +248,21 @@ public class DemoDataGenerator {
 
     private BigDecimal generateFrogShopTransactions(Account demoAccount, List<Transaction> transactions,
                                                      LocalDate startDate, LocalDate endDate, BigDecimal balance) {
+        final int FROGSHOP_PROBABILITY_PERCENT = 30;
+        final int FROGSHOP_MIN_AMOUNT = 10;
+        final int FROGSHOP_MAX_AMOUNT = 40;
+        final int FROGSHOP_TIME_MIN_HOUR = 11;
+        final int FROGSHOP_TIME_MAX_HOUR = 21;
+        final int FROGSHOP_TIME_MINUTE = 0;
+
         Account frogShop = actorAccountProvider.getFrogShopAccount();
         LocalDate date = startDate;
 
         while (!date.isAfter(endDate)) {
             // ~30% chance per day (roughly a few times per week)
-            if (ThreadLocalRandom.current().nextInt(100) < 30) {
-                BigDecimal amount = randomAmount(10, 40);
-                LocalDateTime dateTime = date.atTime(randomTime(11, 0, 21, 0));
+            if (ThreadLocalRandom.current().nextInt(PERCENTAGE_BASE) < FROGSHOP_PROBABILITY_PERCENT) {
+                BigDecimal amount = randomAmount(FROGSHOP_MIN_AMOUNT, FROGSHOP_MAX_AMOUNT);
+                LocalDateTime dateTime = date.atTime(randomTime(FROGSHOP_TIME_MIN_HOUR, FROGSHOP_TIME_MINUTE, FROGSHOP_TIME_MAX_HOUR, FROGSHOP_TIME_MINUTE));
 
                 Transaction tx = new DemoTransferBuilder()
                         .from(demoAccount)
@@ -248,6 +281,12 @@ public class DemoDataGenerator {
 
     private BigDecimal generateMarekTransactions(Account demoAccount, List<Transaction> transactions,
                                                   LocalDate startDate, LocalDate endDate, BigDecimal balance) {
+        final int MAREK_MIN_AMOUNT = 20;
+        final int MAREK_MAX_AMOUNT = 100;
+        final int MAREK_TIME_MIN_HOUR = 18;
+        final int MAREK_TIME_MAX_HOUR = 22;
+        final int MAREK_TIME_MINUTE = 0;
+
         Account marek = actorAccountProvider.getKolegaMarekAccount();
         LocalDate date = startDate;
 
@@ -257,8 +296,8 @@ public class DemoDataGenerator {
         }
 
         while (!date.isAfter(endDate)) {
-            BigDecimal amount = randomAmount(20, 100);
-            LocalDateTime dateTime = date.atTime(randomTime(18, 0, 22, 0));
+            BigDecimal amount = randomAmount(MAREK_MIN_AMOUNT, MAREK_MAX_AMOUNT);
+            LocalDateTime dateTime = date.atTime(randomTime(MAREK_TIME_MIN_HOUR, MAREK_TIME_MINUTE, MAREK_TIME_MAX_HOUR, MAREK_TIME_MINUTE));
 
             Transaction tx = new DemoTransferBuilder()
                     .from(demoAccount)

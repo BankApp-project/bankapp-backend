@@ -44,8 +44,6 @@ class RegistrationControllerIntegrationTest {
     private static final String DATE_OF_BIRTH_FIELD = "dateOfBirth";
     private static final String FIRSTNAME_FIELD = "firstname";
     private static final String PESEL_FIELD = "pesel";
-    private static final String EMAIL_FIELD = "email";
-    private static final String PASSWORD_FIELD = "password";
 
     @Autowired
     private MockMvc mockMvc;
