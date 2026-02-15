@@ -74,6 +74,9 @@ public class User extends BaseUser implements PersonalInfo, AccountOwner {
     @Column(name = "account_counter")
     private Integer accountCounter;
 
+    @Column(name = "is_demo")
+    private boolean isDemo = false;
+
 
     /**
      * Default constructor for JPA and testing
