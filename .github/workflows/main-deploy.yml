@@ -51,16 +51,16 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
 
-      - name: Deploy
-        uses: appleboy/ssh-action@v1.2.2
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.SSH_HOST_USERNAME }}
-          port: ${{ secrets.PORT }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
-            cd $HOME
-            docker compose down
-            docker compose up -d
+#      - name: Deploy
+#        uses: appleboy/ssh-action@v1.2.2
+#        with:
+#          host: ${{ secrets.HOST }}
+#          username: ${{ secrets.SSH_HOST_USERNAME }}
+#          port: ${{ secrets.PORT }}
+#          key: ${{ secrets.SSH_PRIVATE_KEY }}
+#          script: |
+#            docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+#            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+#            cd $HOME
+#            docker compose down
+#            docker compose up -d
