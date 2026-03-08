@@ -208,7 +208,6 @@
                     <!--suppress UnresolvedMavenProperty -->
                     <argLine>
                         ${argLine}
-                        -javaagent:${settings.localRepository}/net/bytebuddy/byte-buddy-agent/1.15.11/byte-buddy-agent-1.15.11.jar
                     </argLine>
                 </configuration>
             </plugin>
