@@ -23,6 +23,7 @@ public class PasswordResetService {
     private final UserService userService;
     private final PasswordResetTokenService passwordResetTokenService;
     private final EmailService emailService;
+    private final PasswordResetConfirmationAsyncService passwordResetConfirmationAsyncService;
 
     /**
      * Initiates password reset process for user with given email
@@ -94,7 +95,6 @@ public class PasswordResetService {
      * @throws UnexpectedTokenValidationException           if token validation fails
      * @throws PasswordChangeException            if password update fails
      * @throws InvalidEmailFormatException        if email is not valid
-     * @throws EmailSendingException              if email sending fails
      */
     @Transactional
     public void completeReset(PasswordChangeForm request) {
@@ -116,8 +116,8 @@ public class PasswordResetService {
         updateUserPassword(email, newPassword);
         log.debug("Password successfully updated for user: {}", email);
 
-        log.debug("Sending password reset confirmation email to: {}", email);
-        emailService.sendPasswordResetConfirmation(email.toString(), fullNameOfUser);
+        log.debug("Queueing password reset confirmation email for asynchronous delivery to: {}", email);
+        passwordResetConfirmationAsyncService.sendPasswordResetConfirmation(email.toString(), fullNameOfUser);
         log.info("Password reset completed successfully for user: {} (token: {})", email, tokenId);
     }
 
