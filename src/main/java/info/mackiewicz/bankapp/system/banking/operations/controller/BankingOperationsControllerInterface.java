@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Tag(name = "Banking Operations", description = "API for performing banking operations like transfers, withdrawals and deposits")
 @SecurityRequirement(name = ApiConstants.BASIC_AUTH_SCHEME_NAME)
-@RequestMapping("/api/banking")
+@RequestMapping("/api/transfers")
 public interface BankingOperationsControllerInterface {
 
     /**
@@ -44,9 +44,9 @@ public interface BankingOperationsControllerInterface {
             description = """
                     Transfers funds from source account to destination account using IBAN identifiers.\s
                     
-                    Before making transfer, you should **validate recipient's IBAN using GET /api/validate-iban** endpoint."""
+                    Before making transfer, you should **validate recipient's IBAN using GET /api/validations/iban** endpoint."""
     )
-    @PostMapping("/transfer/iban")
+    @PostMapping("/iban")
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200", 
@@ -68,7 +68,7 @@ public interface BankingOperationsControllerInterface {
                         summary = "Example of a validation error response",
                         value = """
                                 {
-                                  "path": "/api/banking/transfer/iban",
+                                  "path": "/api/transfers/iban",
                                   "errors": [
                                     {
                                       "field": "recipientIban",
@@ -87,7 +87,7 @@ public interface BankingOperationsControllerInterface {
                         summary = "Example of an insufficient funds error response",
                         value = """
                                 {
-                                  "path": "/api/banking/transfer/iban",
+                                  "path": "/api/transfers/iban",
                                   "status": "BAD_REQUEST",
                                   "title": "INSUFFICIENT_FUNDS",
                                   "message": "Insufficient funds for this transaction. Please check your balance and try again.",
@@ -109,7 +109,7 @@ public interface BankingOperationsControllerInterface {
                         summary = "Example of an account ownership error response",
                         value = """
                                 {
-                                  "path": "/api/banking/transfer/iban",
+                                  "path": "/api/transfers/iban",
                                   "status": "FORBIDDEN",
                                   "title": "ACCOUNT_OWNERSHIP_ERROR",
                                   "message": "You do not have permission to access this account.",
@@ -131,7 +131,7 @@ public interface BankingOperationsControllerInterface {
                         summary = "Example of an account not found error response",
                         value = """
                                 {
-                                  "path": "/api/banking/transfer/iban",
+                                  "path": "/api/transfers/iban",
                                   "status": "NOT_FOUND",
                                   "title": "ACCOUNT_NOT_FOUND",
                                   "message": "Account not found.",
@@ -173,9 +173,9 @@ public interface BankingOperationsControllerInterface {
         description = """
                 Transfers funds from source account to the account associated with the provided email address.\s
                 
-                Before making transfer, you should **validate recipient's email using GET /api/validate-email** endpoint."""
+                Before making transfer, you should **validate recipient's email using GET /api/validations/email** endpoint."""
     )
-    @PostMapping("/transfer/email")
+    @PostMapping("/email")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Transfer completed successfully", 
                     content = @Content(mediaType = "application/json",
@@ -194,7 +194,7 @@ public interface BankingOperationsControllerInterface {
                         summary = "Example of an insufficient funds error response",
                         value = """
                                 {
-                                  "path": "/api/banking/transfer/email",
+                                  "path": "/api/transfers/email",
                                   "status": "BAD_REQUEST",
                                   "title": "INSUFFICIENT_FUNDS",
                                   "message": "Insufficient funds for this transaction. Please check your balance and try again.",
@@ -206,7 +206,7 @@ public interface BankingOperationsControllerInterface {
                         summary = "Example of a validation error response",
                         value = """
                                 {
-                                  "path": "/api/banking/transfer/iban",
+                                  "path": "/api/transfers/email",
                                   "errors": [
                                     {
                                       "field": "recipientIban",
@@ -235,7 +235,7 @@ public interface BankingOperationsControllerInterface {
                         summary = "Example of an account ownership error response",
                         value = """
                                 {
-                                  "path": "/api/banking/transfer/email",
+                                  "path": "/api/transfers/email",
                                   "status": "FORBIDDEN",
                                   "title": "ACCOUNT_OWNERSHIP_ERROR",
                                   "message": "You do not have permission to access this account.",
@@ -257,7 +257,7 @@ public interface BankingOperationsControllerInterface {
                         summary = "Example of an account not found error response",
                         value = """
                                 {
-                                  "path": "/api/banking/transfer/email",
+                                  "path": "/api/transfers/email",
                                   "status": "NOT_FOUND",
                                   "title": "ACCOUNT_NOT_FOUND",
                                   "message": "Account not found.",
@@ -269,7 +269,7 @@ public interface BankingOperationsControllerInterface {
                         summary = "Example of a destination account not found with a given email error response",
                         value = """
                                 {
-                                  "path": "/api/banking/transfer/email",
+                                  "path": "/api/transfers/email",
                                   "status": "NOT_FOUND",
                                   "title": "ACCOUNT_OWNER_NOT_FOUND",
                                   "message": "Account not found.",

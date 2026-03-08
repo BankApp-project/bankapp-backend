@@ -18,6 +18,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -27,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Tag(name = "User Dashboard", description = "API for managing user dashboard information")
 @SecurityRequirement(name = ApiConstants.BASIC_AUTH_SCHEME_NAME)
-@RequestMapping("/api/dashboard")
+@RequestMapping("/api")
 public interface ApiDashboardControllerInterface {
 
     /**
@@ -42,6 +43,7 @@ public interface ApiDashboardControllerInterface {
             summary = "Get user accounts information",
             description = "Retrieves information about all accounts associated with the authenticated user, including account details and basic account metadata."
     )
+    @GetMapping("/users/me/accounts")
     ResponseEntity<UserAccountsInfoResponse> getAccountsInfo(@NotNull @AuthenticationPrincipal User owner);
 
     /**
@@ -76,7 +78,7 @@ public interface ApiDashboardControllerInterface {
                                             summary = "Example of an account ownership error response",
                                             value = """
                                                     {
-                                                      "path": "/api/dashboard/account/123/balance/working",
+                                                      "path": "/api/accounts/123/balance",
                                                       "status": "FORBIDDEN",
                                                       "title": "ACCOUNT_OWNERSHIP_ERROR",
                                                       "message": "You do not have permission to access this account.",
@@ -92,6 +94,7 @@ public interface ApiDashboardControllerInterface {
                     content = @Content
             )
     })
+    @GetMapping("/accounts/{accountId}/balance")
     ResponseEntity<WorkingBalanceResponse> getWorkingBalance(
             @Parameter(
                     description = "Account identifier",

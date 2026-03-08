@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigDecimal;
 
 @RestController
-@RequestMapping("/api/dashboard")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 @Validated
 public class ApiDashboardController implements ApiDashboardControllerInterface {
@@ -30,7 +30,7 @@ public class ApiDashboardController implements ApiDashboardControllerInterface {
 
 
     @Override
-    @GetMapping("/accounts/info")
+    @GetMapping("/users/me/accounts")
     public ResponseEntity<UserAccountsInfoResponse> getAccountsInfo(@NotNull @AuthenticationPrincipal User owner) {
 
         MDC.put("UserID", owner.getId().toString());
@@ -43,7 +43,7 @@ public class ApiDashboardController implements ApiDashboardControllerInterface {
     }
 
     @Override
-    @GetMapping("/accounts/{accountId}/balance/working")
+    @GetMapping("/accounts/{accountId}/balance")
     public ResponseEntity<WorkingBalanceResponse> getWorkingBalance(
             @Min(1) @NotNull @PathVariable Integer accountId,
             @NotNull @AuthenticationPrincipal User owner

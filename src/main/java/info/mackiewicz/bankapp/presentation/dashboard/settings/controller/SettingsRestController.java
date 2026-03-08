@@ -17,7 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/settings")
+@RequestMapping("/api/users/me")
 public class SettingsRestController implements SettingsRestControllerInterface {
 
     private final SettingsService settingsService;
@@ -26,12 +26,12 @@ public class SettingsRestController implements SettingsRestControllerInterface {
     private boolean isThymeleafEnabled; // Feature flag. Controlled via environment variable
  
     @Override
-    @GetMapping("/user")
+    @GetMapping("/settings")
     public ResponseEntity<UserSettingsDTO> getUserSettings(@AuthenticationPrincipal PersonalInfo user) {
         return ResponseEntity.ok(settingsService.getUserSettings(user));
     }
     @Override
-    @PostMapping("/change-password")
+    @PatchMapping("/password")
     public ResponseEntity<?> changePassword(
             @AuthenticationPrincipal User user,
             @Valid @RequestBody ChangePasswordRequest request,
@@ -49,7 +49,7 @@ public class SettingsRestController implements SettingsRestControllerInterface {
     }
 
     @Override
-    @PostMapping("/change-username")
+    @PatchMapping("/username")
     public ResponseEntity<Void> changeUsername(
             @AuthenticationPrincipal User user,
             @Valid @RequestBody ChangeUsernameRequest request) {

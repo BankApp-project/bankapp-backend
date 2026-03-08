@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @Validated
 @RestController
-@RequestMapping("/api/banking/history")
+@RequestMapping("/api/transactions")
 @RequiredArgsConstructor
 public class TransactionHistoryRestController implements TransactionHistoryRestControllerInterface {
 

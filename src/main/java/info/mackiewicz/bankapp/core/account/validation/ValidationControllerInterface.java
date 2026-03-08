@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @SecurityRequirement(name = ApiConstants.BASIC_AUTH_SCHEME_NAME)
 @Tag(name = "Account ID Validation", description = "Operations for validating data such as IBAN and email addresses")
-@RequestMapping("/api/account/validate")
+@RequestMapping("/api/validations")
 public interface ValidationControllerInterface {
 
     @Operation(
@@ -97,4 +97,3 @@ public interface ValidationControllerInterface {
                     required = true
             ) @RequestParam String email);
 }
-

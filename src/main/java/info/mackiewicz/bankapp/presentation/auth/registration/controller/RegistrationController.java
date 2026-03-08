@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @SecurityRequirements
 @Tag(name = "Registration", description = "API for user registration")
-@RequestMapping("/api/public/registration")
+@RequestMapping("/api/public")
 public interface RegistrationController {
 
     @Operation(
@@ -65,12 +65,12 @@ public interface RegistrationController {
                                               "status": "CONFLICT",
                                               "title": "USER_ALREADY_EXISTS",
                                               "message": "User with these credentials already exists.",
-                                              "path": "/api/registration/regular",
+                                              "path": "/api/public/users",
                                               "timestamp": "11-04-2025 16:18:29"
                                             }
                                             """)))
     })
-    @PostMapping("/regular")
+    @PostMapping("/users")
     ResponseEntity<RegistrationResponse> registerUser(@Valid @RequestBody RegistrationRequest request);
 
     @Operation(
@@ -91,6 +91,6 @@ public interface RegistrationController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = BaseApiError.class)))
     })
-    @PostMapping("/demo")
+    @PostMapping("/demo-users")
     ResponseEntity<DemoRegistrationResponse> registerDemoUser();
 }

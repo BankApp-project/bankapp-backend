@@ -54,8 +54,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("Banking Operations System integration tests")
 public class BankingOperationsIntegrationTest {
 
-    public static final String BANKING_TRANSFER_IBAN_ENDPOINT = "/api/banking/transfer/iban";
-    public static final String BANKING_TRANSFER_EMAIL_ENDPOINT = "/api/banking/transfer/email";
+    public static final String BANKING_TRANSFER_IBAN_ENDPOINT = "/api/transfers/iban";
+    public static final String BANKING_TRANSFER_EMAIL_ENDPOINT = "/api/transfers/email";
 
     @Autowired
     private IntegrationTestUserService testUserService;

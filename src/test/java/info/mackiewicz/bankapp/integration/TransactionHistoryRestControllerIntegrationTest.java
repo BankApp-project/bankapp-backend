@@ -42,7 +42,7 @@ class TransactionHistoryRestControllerIntegrationTest {
     private static final BigDecimal DEFAULT_AMOUNT = new BigDecimal("100.00");
     private static final String DEFAULT_TRANSACTION_TITLE = "TEST";
 
-    private static final String API_HISTORY_PATH = "/api/banking/history";
+    private static final String API_HISTORY_PATH = "/api/transactions";
     private static final String API_HISTORY_EXPORT_PATH = API_HISTORY_PATH + "/export";
 
     @Autowired

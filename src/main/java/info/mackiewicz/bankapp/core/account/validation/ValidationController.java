@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/account/validate")
+@RequestMapping("/api/validations")
 @RequiredArgsConstructor
 public class ValidationController implements ValidationControllerInterface {
 

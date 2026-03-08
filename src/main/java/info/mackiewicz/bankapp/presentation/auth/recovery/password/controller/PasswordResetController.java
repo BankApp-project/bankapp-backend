@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @SecurityRequirements
 @Tag(name = "Password Reset")
-@RequestMapping("/api/password")
+@RequestMapping("/api/public")
 public interface PasswordResetController {
 
     @Operation(
@@ -70,15 +70,15 @@ public interface PasswordResetController {
                     description = "Internal Error"
             )
     })
-    @PostMapping("/reset-request")
+    @PostMapping("/password-reset-requests")
     public ResponseEntity<Void> requestReset(@Valid @RequestBody PasswordResetRequest request);
 
     @Operation(
             summary = "Complete the password reset process",
             description = """
-                    Finalizes the password reset initiated via the `/reset-request` endpoint. 
+                    Finalizes the password reset initiated via the `/password-reset-requests` endpoint.
                     
-                    This endpoint requires a valid password reset token (obtained from the reset email link) and the user's desired new password, submitted within the request body (`PasswordResetRequest`).
+                    This endpoint requires a valid password reset token (obtained from the reset email link) and the user's desired new password, submitted within the request body (`PasswordChangeForm`).
                     
                     If the token is valid and the new password meets the security requirements, the user's password will be updated successfully.<br>
                     An email notification confirming the password change will then be sent to the user's email address.
@@ -105,6 +105,6 @@ public interface PasswordResetController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = BaseApiError.class))
             )
     })
-    @PostMapping("/reset-complete")
+    @PostMapping("/password-reset-confirmations")
     ResponseEntity<Void> completeReset(@Valid @RequestBody PasswordChangeForm request);
 }

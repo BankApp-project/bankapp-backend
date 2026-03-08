@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @SecurityRequirement(name = ApiConstants.BASIC_AUTH_SCHEME_NAME)
 @Tag(name = "User Settings", description = "API for managing user settings such as username and password")
-@RequestMapping("/api/settings")
+@RequestMapping("/api/users/me")
 public interface SettingsRestControllerInterface {
 
         @Operation(summary = "Get user settings", description = " Retrieves the current settings for the authenticated user. The user information is automatically "
@@ -70,13 +70,13 @@ public interface SettingsRestControllerInterface {
                                                           "status": "BAD_REQUEST",
                                                           "title": "INVALID_PASSWORD",
                                                           "message": "The provided password is invalid. Please check your input and try again.",
-                                                          "path": "/api/settings/change-password",
+                                                          "path": "/api/users/me/password",
                                                           "timestamp": "30-03-2025 15:06:32"
                                                         }
                                                         """),
                                         @ExampleObject(name = "Password confirmation mismatch", value = """
                                                         {
-                                                          "path": "/api/settings/change-password",
+                                                          "path": "/api/users/me/password",
                                                           "errors": [
                                                             {
                                                               "field": "confirmPassword",
@@ -95,13 +95,13 @@ public interface SettingsRestControllerInterface {
                                                           "status": "BAD_REQUEST",
                                                           "title": "PASSWORD_SAME",
                                                           "message": "New password cannot be the same as the current one.",
-                                                          "path": "/api/settings/change-password",
+                                                          "path": "/api/users/me/password",
                                                           "timestamp": "30-03-2025 15:08:12"
                                                         }
                                                         """),
                                         @ExampleObject(name = "Password too weak", value = """
                                                         {
-                                                          "path": "/api/settings/change-password",
+                                                          "path": "/api/users/me/password",
                                                           "errors": [
                                                             {
                                                               "field": "password",
@@ -138,7 +138,7 @@ public interface SettingsRestControllerInterface {
                                                             "status": "CONFLICT",
                                                             "title": "USERNAME_TAKEN",
                                                             "message": "Username is already taken. Please choose a different one.",
-                                                            "path": "/api/settings/change-username",
+                                                            "path": "/api/users/me/username",
                                                             "timestamp": "30-03-2025 14:53:56"
                                                           }
                                                           """),
@@ -147,7 +147,7 @@ public interface SettingsRestControllerInterface {
                                                           "status": "BAD_REQUEST",
                                                           "title": "USERNAME_SAME",
                                                           "message": "New username cannot be the same as the current one.",
-                                                          "path": "/api/settings/change-username",
+                                                          "path": "/api/users/me/username",
                                                           "timestamp": "30-03-2025 14:51:47"
                                                         }
                                                         """),
@@ -156,7 +156,7 @@ public interface SettingsRestControllerInterface {
                                                             "status": "BAD_REQUEST",
                                                             "title": "USERNAME_FORBIDDEN",
                                                             "message": "Username is forbidden. Please choose a different one.",
-                                                            "path": "/api/settings/change-username",
+                                                            "path": "/api/users/me/username",
                                                             "timestamp": "30-03-2025 15:02:01"
                                                           }
                                                           """)

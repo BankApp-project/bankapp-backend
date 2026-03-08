@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @SecurityRequirement(name = ApiConstants.BASIC_AUTH_SCHEME_NAME)
 @Tag(name = "Transaction History", description = "Operations for managing and exporting banking transaction history")
-@RequestMapping("/api/banking/history")
+@RequestMapping("/api/transactions")
 public interface TransactionHistoryRestControllerInterface {
 
     @Operation(
@@ -86,7 +86,7 @@ public interface TransactionHistoryRestControllerInterface {
             summary = "Export filtered transactions",
             description = """
                     Exports transactions for a specific account in the requested format (default: CSV).<br>
-                    Supports the same filtering criteria as the GET /history endpoint.
+                    Supports the same filtering criteria as the GET /api/transactions endpoint.
                     
                     User information is automatically extracted from the current session.
                     
