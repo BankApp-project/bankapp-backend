@@ -71,7 +71,7 @@ public interface PasswordResetController {
             )
     })
     @PostMapping("/password-reset-requests")
-    public ResponseEntity<Void> requestReset(@Valid @RequestBody PasswordResetRequest request);
+    ResponseEntity<Void> requestReset(@Valid @RequestBody PasswordResetRequest request);
 
     @Operation(
             summary = "Complete the password reset process",
