@@ -6,6 +6,7 @@ target/
 logs/
 .git/
 BankApp.git/
+task.md
 
 # RooCode
 .clinerules-architect
