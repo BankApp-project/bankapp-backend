@@ -131,11 +131,6 @@
             <artifactId>postgresql</artifactId>
 <!--            imo there, we should specify version for backward compability. -->
         </dependency>
-        <!-- Redis for Cache -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
