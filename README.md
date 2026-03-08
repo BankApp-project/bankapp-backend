@@ -241,11 +241,7 @@ This will build the whole setup for you, including the database and application.
     DB_SCHEMA=bankapp   #your_database_schema_here  (default is bankapp)
     DB_USERNAME=bankapp_user
     DB_PASSWORD=bankapp_pass
-    
-    # Redis configuration
-    REDIS_HOST=localhost
-    REDIS_PORT=6379
-    
+
     # Spring Security credentials
     SPRING_SECURITY_USER_NAME=admin
     SPRING_SECURITY_USER_PASSWORD=your_admin_str0nG_password
