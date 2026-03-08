@@ -16,7 +16,7 @@ showcase of best practices in back-end architecture and clean code.
 - **Tech Stack:**
     - **Back-end:** Java, Spring Boot, Hibernate, PostgreSQL, JUnit, Maven
     - **Dev Tools / Infrastructure:** Git, Docker, AWS EC2/RDS, DockerHub, Linux
-- **Live Demo:** [bankapp.mackiewicz.info](http://bankapp.mackiewicz.info)
+- **Live Demo:** [https://bankapp.online](https://bankapp.online)
 
 ---
 
