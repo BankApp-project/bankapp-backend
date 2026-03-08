@@ -32,6 +32,9 @@ class PasswordResetServiceTest {
     @Mock
     private EmailService emailService;
 
+    @Mock
+    private PasswordResetConfirmationAsyncService passwordResetConfirmationAsyncService;
+
     private PasswordResetService passwordResetService;
 
     private static final String TEST_EMAIL = "test@example.com";
@@ -44,7 +47,8 @@ class PasswordResetServiceTest {
         passwordResetService = new PasswordResetService(
             userService,
             passwordResetTokenService,
-            emailService
+            emailService,
+            passwordResetConfirmationAsyncService
         );
     }
 
@@ -106,7 +110,7 @@ class PasswordResetServiceTest {
 
         // when/then
         assertThatThrownBy(() ->
-            passwordResetService.completeReset(createResetDTO(TEST_TOKEN, NEW_PASSWORD, NEW_PASSWORD)))
+            passwordResetService.completeReset(createResetDTO()))
             .isInstanceOf(UnexpectedTokenValidationException.class)
             .hasMessageContaining("Failed to validate password reset token");
     }
@@ -124,33 +128,29 @@ class PasswordResetServiceTest {
 
         // when/then
         assertThatThrownBy(() ->
-            passwordResetService.completeReset(createResetDTO(TEST_TOKEN, NEW_PASSWORD, NEW_PASSWORD)))
+            passwordResetService.completeReset(createResetDTO()))
             .isInstanceOf(PasswordChangeException.class)
             .hasMessage("Failed to update password for email: " + TEST_EMAIL + "\nPassword update failed");
 
         verify(passwordResetTokenService).consumeToken(mockToken);
-        verify(emailService, never()).sendPasswordResetConfirmation(anyString(), anyString());
+        verify(passwordResetConfirmationAsyncService, never()).sendPasswordResetConfirmation(anyString(), anyString());
     }
 
     @Test
-    void completeReset_WhenConfirmationEmailFails_ShouldThrowEmailSendingException() {
+    void completeReset_ShouldDispatchConfirmationEmailAsynchronously() {
         // given
         PasswordResetToken mockToken = mock(PasswordResetToken.class);
         when(mockToken.getUserEmail()).thenReturn(TEST_EMAIL);
         when(mockToken.getFullName()).thenReturn(TEST_FULL_NAME);
         when(passwordResetTokenService.getValidatedToken(TEST_TOKEN)).thenReturn(mockToken);
-        
-        doThrow(new EmailSendingException("Failed to send confirmation"))
-            .when(emailService).sendPasswordResetConfirmation(TEST_EMAIL, TEST_FULL_NAME);
 
-        // when/then
-        assertThatThrownBy(() ->
-            passwordResetService.completeReset(createResetDTO(TEST_TOKEN, NEW_PASSWORD, NEW_PASSWORD)))
-            .isInstanceOf(EmailSendingException.class)
-            .hasMessage("Failed to send confirmation");
+        // when
+        passwordResetService.completeReset(createResetDTO());
 
+        // then
         verify(passwordResetTokenService).consumeToken(mockToken);
         verify(userService).changeUsersPassword(new EmailAddress(TEST_EMAIL), NEW_PASSWORD);
+        verify(passwordResetConfirmationAsyncService).sendPasswordResetConfirmation(TEST_EMAIL, TEST_FULL_NAME);
     }
 
     @Test
@@ -161,24 +161,24 @@ class PasswordResetServiceTest {
         when(mockToken.getFullName()).thenReturn(TEST_FULL_NAME);
         when(passwordResetTokenService.getValidatedToken(TEST_TOKEN)).thenReturn(mockToken);
         
-        var inOrder = inOrder(passwordResetTokenService, userService, emailService);
+        var inOrder = inOrder(passwordResetTokenService, userService, passwordResetConfirmationAsyncService);
 
         // when
-        passwordResetService.completeReset(createResetDTO(TEST_TOKEN, NEW_PASSWORD, NEW_PASSWORD));
+        passwordResetService.completeReset(createResetDTO());
 
         // then
         inOrder.verify(passwordResetTokenService).getValidatedToken(TEST_TOKEN);
         inOrder.verify(passwordResetTokenService).consumeToken(mockToken);
         inOrder.verify(userService).changeUsersPassword(new EmailAddress(TEST_EMAIL), NEW_PASSWORD);
-        inOrder.verify(emailService).sendPasswordResetConfirmation(TEST_EMAIL, TEST_FULL_NAME);
+        inOrder.verify(passwordResetConfirmationAsyncService).sendPasswordResetConfirmation(TEST_EMAIL, TEST_FULL_NAME);
         inOrder.verifyNoMoreInteractions();
     }
 
-    private PasswordChangeForm createResetDTO(String token, String password, String confirmPassword) {
+    private PasswordChangeForm createResetDTO() {
         PasswordChangeForm dto = new PasswordChangeForm();
-        dto.setToken(token);
-        dto.setPassword(password);
-        dto.setConfirmPassword(confirmPassword);
+        dto.setToken(PasswordResetServiceTest.TEST_TOKEN);
+        dto.setPassword(PasswordResetServiceTest.NEW_PASSWORD);
+        dto.setConfirmPassword(PasswordResetServiceTest.NEW_PASSWORD);
         return dto;
     }
 }

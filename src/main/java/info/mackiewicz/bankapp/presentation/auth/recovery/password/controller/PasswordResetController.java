@@ -32,14 +32,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface PasswordResetController {
 
     @Operation(
-            summary = "Initiate password reset process",
+            summary = "Initiate password reset process (asynchronous)",
             description = """
                     Starts the password reset flow by accepting a user's email address.
                     
+                    The request is accepted and handled asynchronously in the background.
                     If a syntactically valid email address is provided, an email containing a password reset link *may* be sent to that address.
                     
-                    **Security Note:** To prevent email address enumeration, this endpoint **always returns a 200 OK** response, regardless of whether the provided email address exists in the system.<br>
-                    A 200 OK response indicates the request was processed successfully, but does not confirm if the email address is registered or if an email was actually dispatched.
+                    **Security Note:** To prevent email address enumeration, this endpoint **always returns a 202 Accepted** response, regardless of whether the provided email address exists in the system.<br>
+                    A 202 Accepted response indicates only that the request was accepted for processing. It does not confirm whether the email address is registered or if an email was dispatched.
                     
                     Provided email must pass this pattern: 
                     ```
@@ -49,12 +50,12 @@ public interface PasswordResetController {
     )
     @ApiResponses(value = {
             @ApiResponse(
-                    responseCode = "200",
+                    responseCode = "202",
                     description = """
-                            Request processed successfully. 
+                            Request accepted for asynchronous processing. 
                             If the provided email address is registered and syntactically valid, 
                             a password reset link *may* be sent. 
-                            (Note: Always returns 200 OK for security reasons, regardless of email existence.)
+                            (Always returns 202 Accepted for security reasons, regardless of email existence.)
                             """
             ),
             @ApiResponse(
@@ -67,41 +68,47 @@ public interface PasswordResetController {
             ),
             @ApiResponse(
                     responseCode = "500",
-                    description = "Internal Error"
+                    description = "Internal server error while accepting the request.",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = BaseApiError.class))
             )
     })
     @PostMapping("/password-reset-requests")
     ResponseEntity<Void> requestReset(@Valid @RequestBody PasswordResetRequest request);
 
     @Operation(
-            summary = "Complete the password reset process",
+            summary = "Complete password reset",
             description = """
-                    Finalizes the password reset initiated via the `/password-reset-requests` endpoint.
+                    Completes the password reset flow initiated via `/password-reset-requests`.
                     
-                    This endpoint requires a valid password reset token (obtained from the reset email link) and the user's desired new password, submitted within the request body (`PasswordChangeForm`).
+                    This endpoint requires a password reset token (from the reset email link) and the user's new password in the request body (`PasswordChangeForm`).
                     
-                    If the token is valid and the new password meets the security requirements, the user's password will be updated successfully.<br>
-                    An email notification confirming the password change will then be sent to the user's email address.
+                    If the token is valid and the password update succeeds, password reset is completed immediately.
+                    A confirmation email is sent asynchronously after successful completion.
                     """
     )
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Password reset successfully completed."
+                    description = "Password reset completed successfully."
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Invalid request data (e.g., password mismatch, weak password, missing fields).",
+                    description = "Invalid request payload (e.g., password mismatch, weak password, missing fields).",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ValidationApiError.class))
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "TOKEN_NOT_FOUND: Reset link could not be found or has expired. Please request a new reset link.",
+                    description = "TOKEN_NOT_FOUND: Reset link could not be found.",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = BaseApiError.class))
+            ),
+            @ApiResponse(
+                    responseCode = "410",
+                    description = "TOKEN_EXPIRED or TOKEN_USED: Reset link is expired or already used.",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = BaseApiError.class))
             ),
             @ApiResponse(
                     responseCode = "500",
-                    description = "Internal Server Error",
+                    description = "Internal server error during password reset.",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = BaseApiError.class))
             )
     })
